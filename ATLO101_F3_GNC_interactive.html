@@ -51,9 +51,20 @@
           border-radius:50%; background:var(--green); color:var(--navy);
           border:2px solid #fff; font-weight:bold; font-size:13px;
           display:flex; align-items:center; justify-content:center;
-          cursor:pointer; box-shadow:0 1px 6px rgba(11,24,41,.45);
-          transition:transform .15s; }
-  .spot:hover { transform:scale(1.15); }
+          cursor:pointer; box-shadow:0 1px 6px rgba(11,24,41,.45); }
+  .spot:hover, .spot:focus { background:#00C795; outline:none; }
+  .spot .tip { position:absolute; left:26px; top:-10px; width:280px; max-width:62vw;
+               background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px;
+               padding:11px 13px; box-shadow:0 8px 22px rgba(11,24,41,.30);
+               opacity:0; visibility:hidden; transition:opacity .15s;
+               pointer-events:none; z-index:30; text-align:left; }
+  .spot:hover .tip, .spot:focus .tip { opacity:1; visibility:visible; }
+  .spot .tip h4 { color:var(--navy); font-size:13px; margin:0 0 4px; }
+  .spot .tip p { color:var(--navy2); font-size:12px; line-height:1.5; margin:0;
+                 font-weight:normal; }
+  .spot.tip-left .tip { left:auto; right:26px; }
+  .spot.tip-up .tip { top:auto; bottom:-10px; }
   .spot.active { background:var(--gold); color:#fff; }
   .spot::after { content:''; position:absolute; inset:-7px; border-radius:50%;
                  border:2px solid var(--green); opacity:.55;
@@ -179,6 +190,13 @@ HOTSPOTS.forEach((h, i) => {
   el.textContent = i + 1;
   el.setAttribute('role', 'button');
   el.setAttribute('aria-label', h.title);
+  el.setAttribute('tabindex', '0');
+  const tip = document.createElement('div');
+  tip.className = 'tip';
+  tip.innerHTML = '<h4>' + h.title + '</h4><p>' + h.text + '</p>';
+  el.appendChild(tip);
+  if (h.x > 55) el.classList.add('tip-left');
+  if (h.y > 60) el.classList.add('tip-up');
   el.addEventListener('click', () => {
     const on = el.classList.contains('active');
     document.querySelectorAll('.spot').forEach(s => s.classList.remove('active'));
