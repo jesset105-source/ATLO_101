@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Interactive Lessons</title>
+<style>
+  :root { --navy:#0B1829; --green:#00A87E; --greenlt:#ECFDF5; --gray:#64748B; --graylt:#E2E8F0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:#111827; }
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; gap:12px; padding:12px 22px; }
+  .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+          color:var(--navy); font-weight:bold; font-size:11px;
+          display:flex; align-items:center; justify-content:center; }
+  .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .t2 { color:#8BA4BC; font-size:11px; }
+  main { max-width:720px; margin:0 auto; padding:40px 20px; }
+  h1 { color:var(--navy); font-size:26px; margin-bottom:6px; }
+  .rule { height:3px; background:var(--green); margin:12px 0 24px; }
+  a.lesson { display:block; border:1px solid var(--graylt); border-left:4px solid var(--green);
+             border-radius:6px; padding:14px 18px; margin-bottom:10px;
+             text-decoration:none; color:var(--navy); }
+  a.lesson:hover { background:var(--greenlt); }
+  a.lesson .n { color:var(--green); font-weight:bold; font-size:12px; }
+  a.lesson .t { font-weight:bold; font-size:15px; }
+  p.note { color:var(--gray); font-size:12.5px; margin-top:24px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="logo">ISE</div>
+  <div><div class="t1">Inside Spacecraft Engineering</div>
+       <div class="t2">ATLO 101 &nbsp;-&nbsp; Foundation Module &mdash; Interactive Lessons</div></div>
+</div>
+<main>
+  <h1>ATLO 101 &mdash; Interactive Lessons</h1>
+  <div class="rule"></div>
+  <a class="lesson" href="ATLO101_F3_GNC_interactive.html">
+    <span class="n">LESSON F.3</span>
+    <div class="t">Guidance, Navigation &amp; Control (GNC)</div>
+  </a>
+  <p class="note">More lessons coming soon. These pages are embedded in the
+  ATLO 101 course on Thinkific.</p>
+</main>
+</body>
+</html>
