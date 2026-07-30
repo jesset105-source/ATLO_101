@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Lesson 1.3: Building a Detailed Schedule</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badge { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:860px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; display:flex;
+            align-items:center; gap:10px; flex-wrap:wrap; }
+  .slochip { background:var(--bgdiag); border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:11px; letter-spacing:.03em;
+             padding:3px 9px; border-radius:20px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.15; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:26px; }
+
+  .card { background:var(--bgdiag); border:1px solid var(--graylt);
+          border-radius:10px; padding:18px; margin-bottom:26px; }
+  .card > h2 { text-align:center; color:var(--navy); font-size:13px;
+               letter-spacing:.05em; text-transform:uppercase;
+               border-bottom:1px solid var(--graylt); padding-bottom:10px; margin-bottom:6px; }
+  .hint { text-align:center; color:var(--gray); font-size:11.5px; margin-bottom:12px; }
+
+  /* accordion (roles, phases, procedure anatomy, test-plan elements, deliverables) */
+  .comp { background:#fff; border:1px solid var(--graylt); border-radius:8px;
+          margin-bottom:10px; overflow:hidden; }
+  .comp button { all:unset; display:flex; width:100%; align-items:center;
+                 gap:12px; padding:13px 16px; cursor:pointer; }
+  .comp button:hover { background:var(--bglight); }
+  .comp .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex:none; }
+  .comp .name { font-weight:bold; color:var(--navy); font-size:14.5px; }
+  .comp .sub { color:var(--gray); font-size:12px; margin-left:auto; padding-right:8px; }
+  .comp .chev { color:var(--green); font-weight:bold; transition:transform .2s; flex:none; }
+  .comp.open .chev { transform:rotate(90deg); }
+  .comp .body { display:none; padding:0 16px 15px 38px; color:var(--navy2);
+                font-size:13.5px; line-height:1.6; }
+  .comp.open .body { display:block; }
+  .comp .body p { margin-bottom:8px; }
+  .comp .body p:last-child { margin-bottom:0; }
+
+  .ex { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .ex > div { flex:1; min-width:200px; border-radius:6px; padding:8px 11px; font-size:12.5px; }
+  .ex .good { background:var(--greenlt); border-left:3px solid var(--green); }
+  .ex .bad { background:var(--bglight); border-left:3px solid var(--gray); }
+  .ex .lbl { font-weight:bold; font-size:10.5px; letter-spacing:.04em; display:block; margin-bottom:3px; }
+  .ex .good .lbl { color:var(--green); }
+  .ex .bad .lbl { color:var(--gray); }
+
+  h2.sec { color:var(--navy2); font-size:19px; margin:30px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:12px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; text-align:justify; }
+  ul.body-list { margin:0 0 15px 20px; }
+  ul.body-list li { font-size:14.5px; line-height:1.6; margin-bottom:7px; color:var(--black); }
+
+  .keypoint { background:var(--greenlt); border:1px solid var(--green);
+              border-left:4px solid var(--green); border-radius:4px;
+              padding:14px 18px; margin:8px 0 26px; }
+  .keypoint .kt { color:var(--green); font-weight:bold; font-size:12.5px;
+                  letter-spacing:.04em; margin-bottom:5px; }
+  .keypoint p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .keypoint.gold { background:var(--goldlt); border-color:var(--gold); }
+  .keypoint.gold .kt { color:var(--gold); }
+
+  /* chain diagram (mission lifecycle / critical path) */
+  .chain-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+  .chain-node { position:relative; flex:1 1 110px; min-width:100px; max-width:150px;
+                background:#fff; border:2px solid var(--graylt); border-radius:8px;
+                padding:12px 10px; text-align:center; cursor:pointer; }
+  .chain-node .cn-title { font-weight:bold; color:var(--navy); font-size:12.5px; line-height:1.3; }
+  .chain-node .cn-sub { color:var(--gray); font-size:10.5px; margin-top:3px; }
+  .chain-node.critical { border-color:var(--gold); background:var(--goldlt); }
+  .chain-node.critical .cn-title { color:#92400E; }
+  .chain-node:hover, .chain-node:focus { border-color:var(--green); outline:none; }
+  .chain-node .tip { position:absolute; left:50%; top:110%; transform:translateX(-50%);
+               width:230px; max-width:70vw; background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px; padding:11px 13px;
+               box-shadow:0 8px 22px rgba(11,24,41,.30); opacity:0; visibility:hidden;
+               transition:opacity .15s; pointer-events:none; z-index:30; text-align:left; }
+  .chain-node.critical .tip { border-left-color:var(--gold); }
+  .chain-node:hover .tip, .chain-node:focus .tip { opacity:1; visibility:visible; }
+  .chain-node .tip h4 { color:var(--navy); font-size:12.5px; margin:0 0 4px; }
+  .chain-node .tip p { color:var(--navy2); font-size:11.5px; line-height:1.5; margin:0; font-weight:normal; }
+  .chain-legend { display:flex; gap:18px; justify-content:center; margin-top:34px;
+                  font-size:11px; color:var(--gray); flex-wrap:wrap; }
+  .chain-legend span { display:inline-flex; align-items:center; gap:5px; }
+  .chain-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .chain-legend .lc1 { background:#fff; border:2px solid var(--graylt); }
+  .chain-legend .lc2 { background:var(--goldlt); border:2px solid var(--gold); }
+
+  /* decision scenario */
+  .scenario-text { font-size:14px; line-height:1.65; color:var(--black);
+                    background:#fff; border:1px solid var(--graylt); border-radius:8px;
+                    padding:16px 18px; margin-bottom:14px; }
+  .dopt { display:block; width:100%; text-align:left; background:#fff;
+          border:1.5px solid var(--graylt); border-radius:8px; padding:12px 15px;
+          margin-bottom:9px; font-size:13.5px; color:var(--navy); cursor:pointer;
+          font-family:inherit; }
+  .dopt:hover { border-color:var(--navy3); background:var(--bglight); }
+  .dopt .letter { display:inline-block; width:20px; height:20px; border-radius:50%;
+                   background:var(--bgdiag); color:var(--navy2); font-weight:bold;
+                   font-size:11px; text-align:center; line-height:20px; margin-right:9px; }
+  .dopt.chosen.correct { border-color:var(--green); background:var(--greenlt); }
+  .dopt.chosen.correct .letter { background:var(--green); color:#fff; }
+  .dopt.chosen.wrong { border-color:var(--gray); background:var(--bglight); }
+  .dopt.disabled { cursor:default; }
+  .dfeedback { display:none; border-radius:8px; padding:14px 18px; margin-top:6px;
+               font-size:13.5px; line-height:1.6; }
+  .dfeedback.show { display:block; }
+  .dfeedback.correct { background:var(--greenlt); border-left:4px solid var(--green); color:var(--navy2); }
+  .dfeedback.wrong { background:var(--bglight); border-left:4px solid var(--gray); color:var(--navy2); }
+  .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .dfeedback.correct .dtag { color:var(--green); }
+  .dfeedback.wrong .dtag { color:var(--gray); }
+
+  /* quiz */
+  .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
+       margin-bottom:12px; }
+  .q .qn { color:var(--gray); font-weight:bold; font-size:11px; letter-spacing:.05em; }
+  .q .qt { color:var(--navy); font-size:14.5px; line-height:1.5; margin:4px 0 10px; }
+  .q button { all:unset; cursor:pointer; color:var(--green); font-weight:bold;
+              font-size:12.5px; }
+  .q button:hover { text-decoration:underline; }
+  .q .ans { display:none; background:var(--bglight); border-left:3px solid var(--gold);
+            padding:10px 14px; margin-top:10px; color:var(--navy2);
+            font-size:13px; line-height:1.6; }
+  .q.revealed .ans { display:block; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 1: Planning</div></div>
+  </div>
+  <div class="badge">LESSON 1.3</div>
+</div>
+
+<main>
+  <div class="lesnum">Lesson 1.3 &mdash; Interactive <span class="slochip">SLO 4</span></div>
+  <h1>Building a Detailed Schedule</h1>
+  <div class="rule"></div>
+  <div class="hook">An ATLO campaign doesn't just happen. It is planned in detail, months or years in advance, down to individual tasks and dependencies -- and it is a living document that changes constantly as the campaign progresses.</div>
+
+  <div class="card"><h2>Critical Path &amp; Float</h2><div class="hint">Hover or tap each task to see whether it is critical or has schedule margin.</div><div id="critpath-chain-card" class="chain-row"></div><div class="chain-legend"><span><i class="lc2"></i> Critical path (zero float)</span><span><i class="lc1"></i> Has schedule float</span></div></div>
+<h2 class="sec">The Work Breakdown Structure (WBS)</h2><div class="secline"></div>
+<p class="body">Before you can build a schedule, you need to know what work exists. That's what the Work Breakdown Structure is for. A WBS breaks the entire ATLO campaign into discrete, manageable tasks -- starting at the highest level (campaign phases) and decomposing down to individual activities. The WBS gives every task a home in the hierarchy and ensures nothing is missed.</p>
+<p class="body">Building a WBS requires knowing the campaign -- what hardware is coming, what tests need to be run, what reviews are required, what environmental testing is planned. An experienced ATLO engineer contributes to the WBS by identifying the specific tasks and durations for the operations they own.</p>
+<h2 class="sec">Task Dependencies</h2><div class="secline"></div>
+<p class="body">Once you have a list of tasks, you need to understand which ones depend on each other. Some tasks cannot start until other tasks are complete; some can run in parallel. Getting the dependencies right is what makes a schedule realistic. Examples from an ATLO campaign:</p>
+<ul class="body-list"><li>You cannot run an end-to-end RF functional test until the RF subsystem is installed and powered up</li><li>You cannot power up the flight vehicle electrically until the ISTM checks confirm the harness is correct</li><li>You cannot begin TVAC until all open DRs that could affect the test are dispositioned</li><li>You cannot ship the vehicle until the Pre-Shipment Review is complete and all closure criteria are met</li></ul>
+<p class="body">Task dependencies create a chain. If one task slips, everything downstream of it potentially slips.</p>
+<h2 class="sec">Launch Window Constraints</h2><div class="secline"></div>
+<p class="body">Spacecraft launches are not flexible the way most project milestones are. A launch window is determined by orbital mechanics -- the geometry of the Earth, the target orbit, and the launch vehicle's capabilities. Miss the window, and the next one may be days, weeks, or months away.</p>
+<p class="body">This means the launch date is often the most fixed point in the entire program. Everything in the campaign schedule is built backward from that date. ATLO is the last major phase before launch, which means ATLO schedule slips directly threaten the launch window -- schedule discipline here is not bureaucratic box-checking.</p>
+<h2 class="sec">Cost Consequences of Schedule Slip</h2><div class="secline"></div>
+<p class="body">Every task in the ATLO schedule has a cost associated with it -- labor, facility time, GSE rental, personnel travel. When tasks take longer than planned, those costs increase. The Earned Value Management (EVM) system tracks the relationship between schedule performance and cost performance, and the Estimate at Completion (EAC) changes every time a test runs long, a DR is opened, or scope is added.</p>
+<p class="body">This is why test preparation matters. An ATLO engineer who understands the procedure, has GSE configured correctly, and has expected values documented before the test starts is far less likely to introduce delays than one figuring things out during execution. Preparation is cost avoidance.</p>
+<h2 class="sec">What Drives Schedule Slip in ATLO</h2><div class="secline"></div>
+<p class="body">From real campaign experience, the most common drivers of ATLO schedule slip are: Discrepancy Reports (every DR requires investigation and disposition time, and some require rework), design changes late in the campaign, added scope that surfaces during execution, test duration overruns, and improper planning -- tasks that were underestimated or had missing dependencies. When you can see a schedule risk coming, surface it early. Early visibility gives the program options; late surprises don't.</p>
+<h2 class="sec">Lesson Quiz Preview</h2><div class="secline"></div><div class="hint" style="text-align:left; margin-bottom:14px;">Think through your answer first, then reveal what a strong answer covers.</div><div id="quiz"></div>
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+
+<script>
+const ACCORDIONS = [];
+ACCORDIONS.forEach(acc => {
+  const mount = document.getElementById(acc.mount);
+  if (!mount) return;
+  acc.items.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'comp';
+    let exHtml = '';
+    if (c.good || c.bad) {
+      exHtml = '<div class="ex">' +
+        (c.good ? '<div class="good"><span class="lbl">GOOD</span>' + c.good + '</div>' : '') +
+        (c.bad ? '<div class="bad"><span class="lbl">VAGUE</span>' + c.bad + '</div>' : '') +
+        '</div>';
+    }
+    d.innerHTML = '<button><span class="dot"></span><span class="name">' + c.name +
+      '</span><span class="sub">' + (c.sub || '') + '</span><span class="chev">&#8250;</span></button>' +
+      '<div class="body"><p>' + c.body + '</p>' + exHtml + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('open'));
+    mount.appendChild(d);
+  });
+});
+
+const QUIZ = [{"q": "What is a Work Breakdown Structure, and what is its purpose in ATLO campaign planning?", "a": "A hierarchical decomposition of the entire campaign into discrete, manageable tasks, from top-level phases down to individual activities -- it ensures every piece of work has a home and nothing is missed."}, {"q": "What is a task dependency? Give one example from an ATLO campaign.", "a": "A relationship where one task cannot start until another is complete. Example: you cannot power up the flight vehicle electrically until ISTM checks confirm the harness is correct."}, {"q": "What is the critical path, and why does it matter to an ATLO engineer?", "a": "The sequence of dependent tasks that determines the minimum time to complete the campaign -- tasks on it have zero float, so any slip there slips the whole campaign end date directly."}, {"q": "Why is the launch window one of the most fixed constraints in an ATLO campaign schedule?", "a": "It is set by orbital mechanics, not program preference. Missing it can mean waiting days to months for the next opportunity, so the entire campaign schedule is built backward from that fixed date."}, {"q": "List three common drivers of schedule slip in ATLO campaigns.", "a": "Any three of: Discrepancy Reports requiring investigation or rework, late design changes, added test scope, test duration overruns, and improper planning (underestimated tasks or missing dependencies)."}];
+const quizMount = document.getElementById('quiz');
+if (quizMount) {
+  QUIZ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<div class="qn">QUESTION ' + (i + 1) + '</div>' +
+      '<div class="qt">' + q.q + '</div>' +
+      '<button>Reveal what a strong answer covers &#8250;</button>' +
+      '<div class="ans">' + q.a + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('revealed'));
+    quizMount.appendChild(d);
+  });
+}
+
+const CHAINS = [{"mount": "critpath-chain-card", "nodes": [{"title": "Flatsat Buildup", "sub": "5 days \u00b7 0 float", "critical": true, "detail": "Zero float -- everything downstream depends on flatsat being ready. A slip here delays every subsystem test that follows."}, {"title": "Subsystem Functional Test", "sub": "3 days \u00b7 0 float", "critical": true, "detail": "On the critical path: the system-level test cannot start until every subsystem is proven individually."}, {"title": "Documentation Review", "sub": "2 days \u00b7 4 days float", "detail": "Has float -- this can slip up to four days without affecting the campaign end date, because other tasks are still running in parallel."}, {"title": "ISTM Checks", "sub": "1 day \u00b7 0 float", "critical": true, "detail": "On the critical path: the harness must be verified safe-to-mate before the vehicle can be powered up electrically -- nothing after this can start without it."}, {"title": "System Functional Test", "sub": "4 days \u00b7 0 float", "critical": true, "detail": "On the critical path: this is the integrated test every subsystem path feeds into."}, {"title": "GSE Calibration Refresh", "sub": "1 day \u00b7 6 days float", "detail": "Has float -- plenty of schedule margin here since it can happen any time before the equipment is actually needed."}]}];
+CHAINS.forEach(chain => {
+  const mount = document.getElementById(chain.mount);
+  if (!mount) return;
+  chain.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'chain-node' + (n.critical ? ' critical' : '');
+    el.setAttribute('tabindex', '0');
+    el.innerHTML = '<div class="cn-title">' + n.title + '</div>' +
+      (n.sub ? '<div class="cn-sub">' + n.sub + '</div>' : '') +
+      '<div class="tip"><h4>' + n.title + '</h4><p>' + n.detail + '</p></div>';
+    mount.appendChild(el);
+  });
+});
+
+const DECISIONS = [];
+DECISIONS.forEach(dec => {
+  const mount = document.getElementById(dec.mount);
+  if (!mount) return;
+  const feedback = document.createElement('div');
+  feedback.className = 'dfeedback';
+  mount.appendChild(feedback);
+  let answered = false;
+  dec.options.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    const btn = document.createElement('button');
+    btn.className = 'dopt';
+    btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
+      feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
+        '</span>' + opt.feedback;
+    });
+    mount.insertBefore(btn, feedback);
+  });
+});
+</script>
+</body>
+</html>
