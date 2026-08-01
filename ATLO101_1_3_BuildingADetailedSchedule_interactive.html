@@ -138,6 +138,29 @@
   .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
   .dfeedback.correct .dtag { color:var(--green); }
   .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
 
   /* quiz */
   .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
@@ -173,6 +196,21 @@
   <div class="hook">An ATLO campaign doesn't just happen. It is planned in detail, months or years in advance, down to individual tasks and dependencies -- and it is a living document that changes constantly as the campaign progresses.</div>
 
   <div class="card"><h2>Critical Path &amp; Float</h2><div class="hint">Hover or tap each task to see whether it is critical or has schedule margin.</div><div id="critpath-chain-card" class="chain-row"></div><div class="chain-legend"><span><i class="lc2"></i> Critical path (zero float)</span><span><i class="lc1"></i> Has schedule float</span></div></div>
+<div class="card"><h2>Simulation &mdash; What Happens If a Task Slips?</h2>
+    <div class="hint">Pick a task from the schedule above, choose a slip in days, and see what actually happens to the campaign end date.</div>
+    <div class="sim-row">
+      <div class="sim-field">
+        <label for="slip-sim-task">Task</label>
+        <select id="slip-sim-task"><option value="0">Flatsat Buildup &mdash; 5 days, 0 days float</option><option value="1">Subsystem Functional Test &mdash; 3 days, 0 days float</option><option value="2">Documentation Review &mdash; 2 days, 4 days float</option><option value="3">ISTM Checks &mdash; 1 days, 0 days float</option><option value="4">System Functional Test &mdash; 4 days, 0 days float</option><option value="5">GSE Calibration Refresh &mdash; 1 days, 6 days float</option></select>
+      </div>
+      <div class="sim-field">
+        <label for="slip-sim-days">Slip (days)</label>
+        <input type="number" id="slip-sim-days" min="0" value="2" style="width:90px;">
+      </div>
+      <button class="sim-btn-el" id="slip-sim-btn">Calculate Impact</button>
+    </div>
+    <div class="dfeedback" id="slip-sim-result"></div>
+    </div>
 <h2 class="sec">The Work Breakdown Structure (WBS)</h2><div class="secline"></div>
 <p class="body">Before you can build a schedule, you need to know what work exists. That's what the Work Breakdown Structure is for. A WBS breaks the entire ATLO campaign into discrete, manageable tasks -- starting at the highest level (campaign phases) and decomposing down to individual activities. The WBS gives every task a home in the hierarchy and ensures nothing is missed.</p>
 <p class="body">Building a WBS requires knowing the campaign -- what hardware is coming, what tests need to be run, what reviews are required, what environmental testing is planned. An experienced ATLO engineer contributes to the WBS by identifying the specific tasks and durations for the operations they own.</p>
@@ -271,6 +309,41 @@ DECISIONS.forEach(dec => {
     mount.insertBefore(btn, feedback);
   });
 });
+
+
+(() => {
+  const TASKS = [{"name": "Flatsat Buildup", "dur": 5, "float": 0}, {"name": "Subsystem Functional Test", "dur": 3, "float": 0}, {"name": "Documentation Review", "dur": 2, "float": 4}, {"name": "ISTM Checks", "dur": 1, "float": 0}, {"name": "System Functional Test", "dur": 4, "float": 0}, {"name": "GSE Calibration Refresh", "dur": 1, "float": 6}];
+  const btn = document.getElementById('slip-sim-btn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const idx = parseInt(document.getElementById('slip-sim-task').value, 10);
+    const slip = Math.max(0, parseInt(document.getElementById('slip-sim-days').value, 10) || 0);
+    const t = TASKS[idx];
+    const impact = Math.max(0, slip - t.float);
+    const box = document.getElementById('slip-sim-result');
+    box.classList.add('show');
+    if (t.float === 0) {
+      box.className = 'dfeedback show gold';
+      box.innerHTML = '<span class="dtag">ON THE CRITICAL PATH</span>' +
+        '<b>' + t.name + '</b> has zero float. A ' + slip + '-day slip here pushes the ' +
+        'campaign end date out by exactly <b>' + slip + ' day' + (slip === 1 ? '' : 's') + '</b> -- ' +
+        'every downstream task shifts with it.';
+    } else if (impact === 0) {
+      box.className = 'dfeedback show correct';
+      box.innerHTML = '<span class="dtag">ABSORBED BY FLOAT</span>' +
+        '<b>' + t.name + '</b> has ' + t.float + ' days of float. A ' + slip +
+        '-day slip is fully absorbed -- <b>no impact</b> on the campaign end date. ' +
+        'But that float is now spent; another slip here would not be free.';
+    } else {
+      box.className = 'dfeedback show gold';
+      box.innerHTML = '<span class="dtag">FLOAT EXCEEDED</span>' +
+        '<b>' + t.name + '</b> has ' + t.float + ' days of float, but a ' + slip +
+        '-day slip is bigger than that. The first ' + t.float + ' day' + (t.float === 1 ? '' : 's') +
+        ' are absorbed -- the remaining <b>' + impact + ' day' + (impact === 1 ? '' : 's') +
+        '</b> push the campaign end date out.';
+    }
+  });
+})();
 </script>
 </body>
 </html>

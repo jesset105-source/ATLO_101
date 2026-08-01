@@ -138,6 +138,29 @@
   .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
   .dfeedback.correct .dtag { color:var(--green); }
   .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
 
   /* quiz */
   .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
@@ -177,6 +200,7 @@
 <p class="body">Every test in ATLO exists to verify a requirement. The requirement might be from the spacecraft specification -- "the RF subsystem shall transmit at a minimum data rate of X Mbps." The test exists to prove that requirement is met.</p>
 <p class="body">Requirements traceability is the documented link between each test and the requirement it verifies. It answers the question: how do we know the spacecraft meets its requirements? The answer is: we ran this test, it passed, and this test verifies requirement X. Without traceability, you can't demonstrate compliance -- traceability is not paperwork, it is proof.</p>
 <div class="card"><h2>What Makes a Good Pass/Fail Criterion</h2><div class="hint">Click each property to see what it requires.</div><div id="passfail-card"></div></div>
+<div class="card"><h2>Scenario: Is This Pass/Fail Criterion Ready?</h2><div class="hint">Read the proposal, then choose the best response.</div><div class="scenario-text">You're planning a test for the RF subsystem's downlink data rate. A colleague proposes this as the pass/fail criterion: <i>"The downlink data rate should be about what we expect based on the design."</i> <b>Is this ready to use?</b></div><div id="passfail-decision-card"></div></div>
 <h2 class="sec">Test Configurations and Prerequisites</h2><div class="secline"></div>
 <p class="body">Before a test can run, certain conditions must be in place. The spacecraft must be in the correct configuration. Required GSE must be connected and verified. Prerequisite tests must be complete. Safety inhibits must be verified in the correct state.</p>
 <p class="body">The test plan defines all of these prerequisites. Part of the ATLO engineer's job before executing any test is confirming that all prerequisites are met. Test readiness is not assumed. It is verified.</p>
@@ -238,7 +262,7 @@ CHAINS.forEach(chain => {
   });
 });
 
-const DECISIONS = [];
+const DECISIONS = [{"mount": "passfail-decision-card", "options": [{"text": "Yes -- it's tied to the design, so it's clearly requirements-based.", "correct": false, "feedback": "Being tied to the design is not enough on its own. \"About what we expect\" has no exact value or tolerance -- it is not specific or measurable, so two engineers could honestly disagree about whether the test passed."}, {"text": "No -- rewrite it with an exact value and tolerance, tied to a requirement: \"Downlink data rate measures &ge;2.0 Mbps &plusmn;0.1 Mbps over a 60-second window, per requirement RF-014.\"", "correct": true, "feedback": "Exactly right. This version is specific (an exact value and tolerance), measurable (objectively evaluable), predetermined (decided before the test runs), and tied to a requirement (RF-014). That is what a real pass/fail criterion looks like."}, {"text": "Yes, but decide the exact pass/fail values after watching what the test actually produces.", "correct": false, "feedback": "Deciding pass/fail after seeing the results is not verification -- it is rationalization. Criteria have to be nailed down in the test plan before the test runs, or they do not mean anything."}, {"text": "No -- pass/fail criteria are only needed for hardware tests, not RF performance tests.", "correct": false, "feedback": "Every test in ATLO needs defined pass/fail criteria. RF performance tests are held to exactly the same standard as hardware tests."}]}];
 DECISIONS.forEach(dec => {
   const mount = document.getElementById(dec.mount);
   if (!mount) return;
@@ -263,6 +287,8 @@ DECISIONS.forEach(dec => {
     mount.insertBefore(btn, feedback);
   });
 });
+
+
 </script>
 </body>
 </html>

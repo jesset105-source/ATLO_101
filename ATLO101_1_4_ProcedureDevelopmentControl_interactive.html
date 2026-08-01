@@ -138,6 +138,29 @@
   .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
   .dfeedback.correct .dtag { color:var(--green); }
   .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
 
   /* quiz */
   .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
@@ -184,7 +207,18 @@
 <p class="body">Procedures are version-controlled documents. Every change -- no matter how small -- requires a new revision. The revision history tracks who changed what, when, and why.</p>
 <p class="body">Before a procedure can be used on the flight vehicle, it must go through a review and approval process -- typically the ATLO lead, the systems engineer, the affected subsystem engineer, and QA. The approval signatures indicate that qualified people have reviewed the steps and expected results and found them correct.</p>
 <p class="body">Using an unapproved procedure on the flight vehicle is a configuration control violation. Using an out-of-date revision -- even if the changes are minor -- is the same. Procedure control is not flexible.</p>
-<div class="keypoint gold"><div class="kt">EXERCISE</div><p>At the end of this lesson, you will write three procedure steps for a simulated power-on sequence, given the system configuration, relevant telemetry points, and expected behavior. Your steps must be specific, unambiguous, and executable -- steps another ATLO engineer could follow without asking you a single question. This exercise is reviewed and returned with feedback before you proceed to Lesson 1.5.</p></div>
+<div class="keypoint gold"><div class="kt">EXERCISE</div><p>Below is the same kind of exercise you'll be graded on: given a system configuration, write a complete procedure step. Draft it, then compare against a model answer. Your formal submission for this lesson is reviewed and returned with feedback before you proceed to Lesson 1.5.</p></div>
+<div class="card"><h2>Written Exercise &mdash; Write a Procedure Step</h2>
+    <div class="hint">Draft your answer, then reveal a model answer to self-check.</div>
+    <div class="scenario-text"><b>System configuration:</b> Propellant valve PV-7 is currently CLOSED. You need to command it OPEN and verify it worked. <b>Ground command:</b> PROP_PV7_OPEN_CMD. <b>Telemetry point:</b> PROP_VALVE_7_STATE (expected values: OPEN or CLOSED). Write one complete procedure step -- Action, Expected Result, and Pass/Fail Criterion -- for this operation.</div>
+    <label class="exercise-label" for="ex14-action">Action</label><textarea class="exercise-field" id="ex14-action" rows="2" placeholder="What command do you send, and to what?"></textarea><label class="exercise-label" for="ex14-result">Expected Result</label><textarea class="exercise-field" id="ex14-result" rows="2" placeholder="What telemetry value or state proves it worked?"></textarea><label class="exercise-label" for="ex14-passfail">Pass/Fail Criterion</label><textarea class="exercise-field" id="ex14-passfail" rows="2" placeholder="What exact, unambiguous condition determines pass vs. fail?"></textarea>
+    <button class="dopt" id="ex14-reveal-btn" style="margin-top:12px; text-align:center;">Compare to a model answer &rsaquo;</button>
+    <div class="dfeedback" id="ex14-modelbox">
+      <span class="dtag">MODEL ANSWER</span>
+      Action: Send command PROP_PV7_OPEN_CMD to open propellant valve PV-7.<br>Expected Result: Verify telemetry point PROP_VALVE_7_STATE transitions from CLOSED to OPEN within 3 seconds of command execution.<br>Pass/Fail Criterion: PASS if PROP_VALVE_7_STATE = OPEN within 3 seconds of command send; FAIL if it remains CLOSED or transitions to any other state.
+      <ul class="exercise-checklist"><li>Is your action specific enough that another engineer could execute it without asking a question?</li><li>Does your expected result name the exact telemetry point and the value it should reach?</li><li>Is your pass/fail condition a yes/no test, with no room for interpretation?</li></ul>
+    </div>
+    </div>
 <h2 class="sec">Lesson Quiz Preview</h2><div class="secline"></div><div class="hint" style="text-align:left; margin-bottom:14px;">Think through your answer first, then reveal what a strong answer covers.</div><div id="quiz"></div>
 </main>
 
@@ -267,6 +301,12 @@ DECISIONS.forEach(dec => {
     });
     mount.insertBefore(btn, feedback);
   });
+});
+
+
+document.getElementById('ex14-reveal-btn').addEventListener('click', () => {
+  const box = document.getElementById('ex14-modelbox');
+  box.classList.add('show', 'correct');
 });
 </script>
 </body>
