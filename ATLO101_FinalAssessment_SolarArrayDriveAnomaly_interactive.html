@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Execution Module Final Assessment: Solar Array Drive Anomaly</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badge { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:860px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; display:flex;
+            align-items:center; gap:10px; flex-wrap:wrap; }
+  .slochip { background:var(--bgdiag); border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:11px; letter-spacing:.03em;
+             padding:3px 9px; border-radius:20px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.15; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:26px; }
+
+  .card { background:var(--bgdiag); border:1px solid var(--graylt);
+          border-radius:10px; padding:18px; margin-bottom:26px; }
+  .card > h2 { text-align:center; color:var(--navy); font-size:13px;
+               letter-spacing:.05em; text-transform:uppercase;
+               border-bottom:1px solid var(--graylt); padding-bottom:10px; margin-bottom:6px; }
+  .hint { text-align:center; color:var(--gray); font-size:11.5px; margin-bottom:12px; }
+
+  /* accordion (roles, phases, procedure anatomy, test-plan elements, deliverables) */
+  .comp { background:#fff; border:1px solid var(--graylt); border-radius:8px;
+          margin-bottom:10px; overflow:hidden; }
+  .comp button { all:unset; display:flex; width:100%; align-items:center;
+                 gap:12px; padding:13px 16px; cursor:pointer; }
+  .comp button:hover { background:var(--bglight); }
+  .comp .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex:none; }
+  .comp .name { font-weight:bold; color:var(--navy); font-size:14.5px; }
+  .comp .sub { color:var(--gray); font-size:12px; margin-left:auto; padding-right:8px; }
+  .comp .chev { color:var(--green); font-weight:bold; transition:transform .2s; flex:none; }
+  .comp.open .chev { transform:rotate(90deg); }
+  .comp .body { display:none; padding:0 16px 15px 38px; color:var(--navy2);
+                font-size:13.5px; line-height:1.6; }
+  .comp.open .body { display:block; }
+  .comp .body p { margin-bottom:8px; }
+  .comp .body p:last-child { margin-bottom:0; }
+
+  .ex { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .ex > div { flex:1; min-width:200px; border-radius:6px; padding:8px 11px; font-size:12.5px; }
+  .ex .good { background:var(--greenlt); border-left:3px solid var(--green); }
+  .ex .bad { background:var(--bglight); border-left:3px solid var(--gray); }
+  .ex .lbl { font-weight:bold; font-size:10.5px; letter-spacing:.04em; display:block; margin-bottom:3px; }
+  .ex .good .lbl { color:var(--green); }
+  .ex .bad .lbl { color:var(--gray); }
+
+  h2.sec { color:var(--navy2); font-size:19px; margin:30px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:12px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; text-align:justify; }
+  ul.body-list { margin:0 0 15px 20px; }
+  ul.body-list li { font-size:14.5px; line-height:1.6; margin-bottom:7px; color:var(--black); }
+
+  .keypoint { background:var(--greenlt); border:1px solid var(--green);
+              border-left:4px solid var(--green); border-radius:4px;
+              padding:14px 18px; margin:8px 0 26px; }
+  .keypoint .kt { color:var(--green); font-weight:bold; font-size:12.5px;
+                  letter-spacing:.04em; margin-bottom:5px; }
+  .keypoint p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .keypoint.gold { background:var(--goldlt); border-color:var(--gold); }
+  .keypoint.gold .kt { color:var(--gold); }
+
+  /* chain diagram (mission lifecycle / critical path) */
+  .chain-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+  .chain-node { position:relative; flex:1 1 110px; min-width:100px; max-width:150px;
+                background:#fff; border:2px solid var(--graylt); border-radius:8px;
+                padding:12px 10px; text-align:center; cursor:pointer; }
+  .chain-node .cn-title { font-weight:bold; color:var(--navy); font-size:12.5px; line-height:1.3; }
+  .chain-node .cn-sub { color:var(--gray); font-size:10.5px; margin-top:3px; }
+  .chain-node.critical { border-color:var(--gold); background:var(--goldlt); }
+  .chain-node.critical .cn-title { color:#92400E; }
+  .chain-node:hover, .chain-node:focus { border-color:var(--green); outline:none; }
+  .chain-node .tip { position:absolute; left:50%; top:110%; transform:translateX(-50%);
+               width:230px; max-width:70vw; background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px; padding:11px 13px;
+               box-shadow:0 8px 22px rgba(11,24,41,.30); opacity:0; visibility:hidden;
+               transition:opacity .15s; pointer-events:none; z-index:30; text-align:left; }
+  .chain-node.critical .tip { border-left-color:var(--gold); }
+  .chain-node:hover .tip, .chain-node:focus .tip { opacity:1; visibility:visible; }
+  .chain-node .tip h4 { color:var(--navy); font-size:12.5px; margin:0 0 4px; }
+  .chain-node .tip p { color:var(--navy2); font-size:11.5px; line-height:1.5; margin:0; font-weight:normal; }
+  .chain-legend { display:flex; gap:18px; justify-content:center; margin-top:34px;
+                  font-size:11px; color:var(--gray); flex-wrap:wrap; }
+  .chain-legend span { display:inline-flex; align-items:center; gap:5px; }
+  .chain-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .chain-legend .lc1 { background:#fff; border:2px solid var(--graylt); }
+  .chain-legend .lc2 { background:var(--goldlt); border:2px solid var(--gold); }
+
+  /* decision scenario */
+  .scenario-text { font-size:14px; line-height:1.65; color:var(--black);
+                    background:#fff; border:1px solid var(--graylt); border-radius:8px;
+                    padding:16px 18px; margin-bottom:14px; }
+  .dopt { display:block; width:100%; text-align:left; background:#fff;
+          border:1.5px solid var(--graylt); border-radius:8px; padding:12px 15px;
+          margin-bottom:9px; font-size:13.5px; color:var(--navy); cursor:pointer;
+          font-family:inherit; }
+  .dopt:hover { border-color:var(--navy3); background:var(--bglight); }
+  .dopt .letter { display:inline-block; width:20px; height:20px; border-radius:50%;
+                   background:var(--bgdiag); color:var(--navy2); font-weight:bold;
+                   font-size:11px; text-align:center; line-height:20px; margin-right:9px; }
+  .dopt.chosen.correct { border-color:var(--green); background:var(--greenlt); }
+  .dopt.chosen.correct .letter { background:var(--green); color:#fff; }
+  .dopt.chosen.wrong { border-color:var(--gray); background:var(--bglight); }
+  .dopt.disabled { cursor:default; }
+  .dfeedback { display:none; border-radius:8px; padding:14px 18px; margin-top:6px;
+               font-size:13.5px; line-height:1.6; }
+  .dfeedback.show { display:block; }
+  .dfeedback.correct { background:var(--greenlt); border-left:4px solid var(--green); color:var(--navy2); }
+  .dfeedback.wrong { background:var(--bglight); border-left:4px solid var(--gray); color:var(--navy2); }
+  .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .dfeedback.correct .dtag { color:var(--green); }
+  .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
+
+  /* quiz */
+  .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
+       margin-bottom:12px; }
+  .q .qn { color:var(--gray); font-weight:bold; font-size:11px; letter-spacing:.05em; }
+  .q .qt { color:var(--navy); font-size:14.5px; line-height:1.5; margin:4px 0 10px; }
+  .q button { all:unset; cursor:pointer; color:var(--green); font-weight:bold;
+              font-size:12.5px; }
+  .q button:hover { text-decoration:underline; }
+  .q .ans { display:none; background:var(--bglight); border-left:3px solid var(--gold);
+            padding:10px 14px; margin-top:10px; color:var(--navy2);
+            font-size:13px; line-height:1.6; }
+  .q.revealed .ans { display:block; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Final Assessment</div></div>
+  </div>
+  <div class="badge">FINAL ASSESSMENT</div>
+</div>
+
+<main>
+  <div class="lesnum">Execution Module Final Assessment &mdash; Interactive <span class="slochip">SLO 1&ndash;12</span></div>
+  <h1>Solar Array Drive Anomaly</h1>
+  <div class="rule"></div>
+  <div class="hook">Every subsystem you investigate in this assessment will report back that its own hardware is healthy. All four of them will be right. Finding out why the motor kept running anyway is going to take every one of them, together.</div>
+
+  
+<style>
+  .stepper { display:flex; justify-content:space-between; gap:6px; margin:0 0 28px; }
+  .step { flex:1; text-align:center; padding:10px 4px; border-radius:8px;
+          background:var(--bgdiag); border:1px solid var(--graylt);
+          font-size:11px; font-weight:bold; color:var(--gray); }
+  .step .num { display:block; width:22px; height:22px; line-height:22px;
+               border-radius:50%; background:#fff; border:2px solid var(--graylt);
+               color:var(--gray); margin:0 auto 5px; font-size:12px; }
+  .step.current { background:var(--greenlt); border-color:var(--green); color:var(--navy2); }
+  .step.current .num { background:var(--green); border-color:var(--green); color:#fff; }
+  .step.done { color:var(--navy2); }
+  .step.done .num { background:var(--navy2); border-color:var(--navy2); color:#fff; }
+
+  .phase-block { display:none; }
+  .phase-block.active { display:block; }
+  .phase-continue { all:unset; cursor:pointer; background:var(--navy); color:#fff;
+                     font-weight:bold; font-size:14px; padding:12px 22px;
+                     border-radius:8px; display:inline-block; margin-top:8px; }
+  .phase-continue:hover { background:var(--navy2); }
+  .phase-continue:disabled { background:var(--graylt); color:var(--gray); cursor:not-allowed; }
+
+  .team-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:18px 0; }
+  @media (max-width:600px) { .team-grid { grid-template-columns:1fr; } }
+  .team-card { background:#fff; border:2px solid var(--graylt); border-radius:10px;
+               padding:16px 18px; cursor:pointer; text-align:left; }
+  .team-card:hover { border-color:var(--navy3); }
+  .team-card.selected { border-color:var(--green); background:var(--greenlt); }
+  .team-card .tn { font-weight:bold; color:var(--navy); font-size:15px; margin-bottom:5px; }
+  .team-card .td { color:var(--navy2); font-size:12.5px; line-height:1.5; }
+
+  .team-variant { display:none; }
+  .team-variant.active { display:block; }
+
+  .telemetry-table { width:100%; border-collapse:collapse; margin:12px 0; font-size:12.5px; }
+  .telemetry-table th, .telemetry-table td { border:1px solid var(--graylt);
+                       padding:7px 10px; text-align:center; }
+  .telemetry-table th { background:var(--navy); color:#fff; font-size:11px; letter-spacing:.03em; }
+  .telemetry-table td.trip { background:var(--goldlt); font-weight:bold; color:#92400E; }
+
+  .your-team-banner { background:var(--goldlt); border:1px solid var(--gold);
+                       border-left:4px solid var(--gold); border-radius:8px;
+                       padding:12px 16px; margin-bottom:16px; font-size:13.5px; color:var(--navy2); }
+</style>
+
+<h2 class="sec">What You're Being Graded On</h2><div class="secline"></div>
+<p class="body">This assessment integrates everything from Foundation through PSR into one investigation: reading telemetry and schematics (Lesson 2.1), understanding CSTM/ISTM verification (2.2, 2.3), evaluating functional test data against baseline (2.4), and writing a complete, correctly-dispositioned Discrepancy Report (2.5). You will pick one subsystem team to investigate hands-on, review what the other three teams found, determine the actual root cause, and write the DR yourself.</p>
+<div class="card"><h2>Investigation Progress</h2><div class="hint">Work through all five phases in order.</div><div class="stepper"><div class="step current" id="step-1"><span class="num">1</span>Anomaly</div><div class="step" id="step-2"><span class="num">2</span>Assign</div><div class="step" id="step-3"><span class="num">3</span>Investigate</div><div class="step" id="step-4"><span class="num">4</span>Share</div><div class="step" id="step-5"><span class="num">5</span>Root Cause</div></div></div>
+<div class="phase-block active" id="phase-1"><h2 class="sec">Phase 1 &mdash; The Anomaly</h2><div class="secline"></div>
+<p class="body">During a flatsat deployment test of the Solar Array Drive Assembly (SADA), the inhibit limit switch first registered <b>TRIPPED</b> in telemetry at <b>T+42.3s</b>, indicating the array had reached full deployment and the drive motor should stop. The drive motor <b>continued actuating for an additional 3.8 seconds</b> before the Test Conductor called a hold per the procedure's abort criteria.</p>
+<p class="body">An Immediate Containment Action has already been taken: the motor circuit was safed via the GSE emergency cutoff, and no hardware damage was observed on initial inspection. A Discrepancy Report has been opened. <b>Your job is to investigate it.</b></p><button class="phase-continue" onclick="goToPhase(2)">Begin Investigation &rsaquo;</button></div>
+<div class="phase-block" id="phase-2"><h2 class="sec">Phase 2 &mdash; Choose Your Team</h2><div class="secline"></div>
+<p class="body">On a real campaign, all four of these teams would investigate in parallel and share findings. Pick the subsystem team you want to investigate hands-on first.</p><div class="team-grid"><div class="team-card" data-team="structures"><div class="tn">Structures</div><div class="td">Owns the mechanical deployment mechanism and the inhibit limit switch hardware itself.</div></div><div class="team-card" data-team="eps"><div class="tn">EPS</div><div class="td">Owns power distribution to the drive motor and the motor driver relay circuit.</div></div><div class="team-card" data-team="gnc"><div class="tn">GNC</div><div class="td">Owns the high-rate telemetry and sensor data feeding the drive control loop.</div></div><div class="team-card" data-team="cdh"><div class="tn">C&amp;DH / FSW</div><div class="td">Owns the flight software logic that reads the inhibit switch and commands the motor.</div></div></div><button class="phase-continue" id="phase2-continue" disabled onclick="goToPhase(3)">Continue to Your Investigation &rsaquo;</button></div>
+<div class="phase-block" id="phase-3"><h2 class="sec">Phase 3 &mdash; Investigate</h2><div class="secline"></div>
+<p class="body">Review the evidence available to your team, then record your finding.</p><div class="team-variant" id="variant-structures"><h2 class="sec">Structures Evidence</h2><div class="secline"></div>
+<p class="body">The inhibit switch is a mechanical microswitch mounted on the array root hinge, rated for 10 million actuation cycles. Post-anomaly inspection shows: no visible physical damage, mounting torque and witness marks intact, no FOD found in the mechanism (Lesson 2.3). One additional fact: this exact flatsat unit completed a random vibration test <b>3 days before this deployment test</b>, at levels within its qualification spec (Lesson 2.6/2.7).</p><div class="card"><h2>Structures Finding</h2>
+    <div class="hint">Draft your team's finding, then reveal a model answer to self-check.</div>
+    <div class="scenario-text">Based on the inspection, is the switch itself mechanically damaged or out of tolerance? What should Structures report to the other teams?</div>
+    <label class="exercise-label" for="fa-structures">Structures Finding</label><textarea class="exercise-field" id="fa-structures" rows="2" placeholder="Is the switch mechanically damaged? What else should the team know?"></textarea>
+    <button class="dopt" id="fa-structures-reveal-btn" style="margin-top:12px; text-align:center;">Compare to a model answer &rsaquo;</button>
+    <div class="dfeedback" id="fa-structures-modelbox">
+      <span class="dtag">MODEL ANSWER</span>
+      <p>No mechanical damage found; the switch meets its physical specification and shows no signs of wear or contamination. <b>However, Structures should still report the recent vibration exposure to the team</b> &mdash; vibration is a known cause of transient electrical contact issues in mechanical switches even when no permanent physical damage results. A clean inspection does not rule out a vibration-induced electrical effect.</p>
+      <ul class="exercise-checklist"><li>Did you avoid concluding "no problem, nothing to report" -- is there a fact worth flagging even without damage?</li></ul>
+    </div>
+    </div></div>
+<div class="team-variant" id="variant-eps"><h2 class="sec">EPS Evidence</h2><div class="secline"></div>
+<p class="body">The motor driver relay coil is specified at approximately 85 &#937; &plusmn;10% (76.5&ndash;93.5 &#937;) at the nominal 28 VDC bus. Post-anomaly CSTM-style verification measured the relay coil at <b>84 &#937;</b>. Telemetry confirms bus voltage at the motor driver connector was a steady <b>28.1 VDC</b> throughout the entire event, with no dropouts or transients recorded.</p><div class="card"><h2>EPS Finding</h2>
+    <div class="hint">Draft your team's finding, then reveal a model answer to self-check.</div>
+    <div class="scenario-text">Is the EPS power/motor-driver circuit implicated in this anomaly? What should EPS report to the other teams?</div>
+    <label class="exercise-label" for="fa-eps">EPS Finding</label><textarea class="exercise-field" id="fa-eps" rows="2" placeholder="Is the power path healthy? Does this rule EPS in or out?"></textarea>
+    <button class="dopt" id="fa-eps-reveal-btn" style="margin-top:12px; text-align:center;">Compare to a model answer &rsaquo;</button>
+    <div class="dfeedback" id="fa-eps-modelbox">
+      <span class="dtag">MODEL ANSWER</span>
+      <p>The relay coil resistance (84 &#937;) is within its 76.5&ndash;93.5 &#937; spec band, and bus voltage was confirmed present and stable throughout the anomaly. <b>EPS reports the power path is healthy and rules out an EPS hardware cause.</b> Whatever kept the motor running, it was not a loss of power or a driver circuit fault.</p>
+      <ul class="exercise-checklist"><li>Did you use the actual spec band (76.5-93.5 Ω), not just eyeball "84 is close to 85"?</li></ul>
+    </div>
+    </div></div>
+<div class="team-variant" id="variant-gnc"><h2 class="sec">GNC / Telemetry Evidence</h2><div class="secline"></div>
+<p class="body">Here is the raw, high-rate telemetry of the inhibit switch's digital state around the start of the anomaly:</p>
+<table class="telemetry-table">
+<tr><th>Mission Elapsed Time (s)</th><th>Raw Inhibit Switch State</th><th>Motor Command</th></tr>
+<tr><td>42.02</td><td>0 (not tripped)</td><td>RUN</td></tr>
+<tr><td>42.06</td><td class="trip">1 (TRIPPED)</td><td>RUN</td></tr>
+<tr><td>42.09</td><td>0 (not tripped)</td><td>RUN</td></tr>
+<tr><td>42.13</td><td class="trip">1 (TRIPPED)</td><td>RUN</td></tr>
+<tr><td>42.17</td><td>0 (not tripped)</td><td>RUN</td></tr>
+<tr><td>42.24</td><td class="trip">1 (TRIPPED)</td><td>RUN</td></tr>
+<tr><td>42.31</td><td class="trip">1 (TRIPPED)</td><td>RUN</td></tr>
+<tr><td>&hellip;</td><td>chatter continues intermittently&hellip;</td><td>RUN</td></tr>
+<tr><td>46.08</td><td class="trip">1 (TRIPPED, stable)</td><td>RUN</td></tr>
+<tr><td>46.58</td><td class="trip">1 (TRIPPED, 500ms stable)</td><td><b>CUTOFF</b></td></tr>
+</table>
+<div class="card"><h2>GNC / Telemetry Finding</h2>
+    <div class="hint">Draft your team's finding, then reveal a model answer to self-check.</div>
+    <div class="scenario-text">What does the raw switch signal actually look like, and how does that compare to what you'd expect from a healthy mechanical switch making a single, clean transition?</div>
+    <label class="exercise-label" for="fa-gnc">Telemetry Finding</label><textarea class="exercise-field" id="fa-gnc" rows="2" placeholder="Describe the raw signal pattern in your own words."></textarea>
+    <button class="dopt" id="fa-gnc-reveal-btn" style="margin-top:12px; text-align:center;">Compare to a model answer &rsaquo;</button>
+    <div class="dfeedback" id="fa-gnc-modelbox">
+      <span class="dtag">MODEL ANSWER</span>
+      <p>The raw signal does not make one clean transition from 0 to 1. It <b>bounces repeatedly between TRIPPED and not-TRIPPED</b> for several seconds before finally settling. A healthy switch making a single clean mechanical contact would not produce this pattern. <b>GNC reports the raw signal is chattering, not transitioning cleanly</b> &mdash; this is a data point the other teams need, especially C&amp;DH/FSW.</p>
+      <ul class="exercise-checklist"><li>Did you describe the bouncing/chattering pattern specifically, not just "it looks weird"?</li></ul>
+    </div>
+    </div></div>
+<div class="team-variant" id="variant-cdh"><h2 class="sec">C&amp;DH / FSW Evidence</h2><div class="secline"></div>
+<p class="body">The flight software's motor-cutoff logic works like this: the inhibit switch must report a continuously TRIPPED state for <b>500 milliseconds</b> before the software commands motor cutoff. This debounce filter exists specifically to reject brief electrical noise so a single glitch can't trigger a false cutoff.</p><div class="card"><h2>C&amp;DH / FSW Finding</h2>
+    <div class="hint">Draft your team's finding, then reveal a model answer to self-check.</div>
+    <div class="scenario-text">If the raw switch signal were chattering on and off for several seconds (as GNC's telemetry shows), what would this 500ms debounce logic actually do, and why might the motor keep running?</div>
+    <label class="exercise-label" for="fa-cdh">C&amp;DH / FSW Finding</label><textarea class="exercise-field" id="fa-cdh" rows="2" placeholder="Walk through what the debounce logic does when the signal keeps bouncing."></textarea>
+    <button class="dopt" id="fa-cdh-reveal-btn" style="margin-top:12px; text-align:center;">Compare to a model answer &rsaquo;</button>
+    <div class="dfeedback" id="fa-cdh-modelbox">
+      <span class="dtag">MODEL ANSWER</span>
+      <p>Every time the raw signal drops back to not-TRIPPED, the 500ms debounce timer resets to zero. If the signal keeps bouncing, the software <b>never accumulates 500ms of continuously stable TRIPPED signal</b>, so cutoff is never commanded &mdash; even though the switch technically "tripped" many times. <b>The software followed its logic correctly.</b> The logic's assumption &mdash; that a switch transition is clean &mdash; is what did not hold here.</p>
+      <ul class="exercise-checklist"><li>Did you explain WHY the timer resets, not just that it "doesn't work"?</li></ul>
+    </div>
+    </div></div><button class="phase-continue" onclick="goToPhase(4)">See What the Other Teams Found &rsaquo;</button></div>
+<div class="phase-block" id="phase-4"><h2 class="sec">Phase 4 &mdash; Cross-Team Findings</h2><div class="secline"></div>
+<p class="body">On a real campaign, this is the point where all four teams compare notes. Here is what each team found:</p><div class="your-team-banner">Your team: <b id="your-team-label">&mdash;</b> &mdash; expand every team below. No single team's finding explains the anomaly alone.</div><div class="card"><h2>All Four Findings</h2><div class="hint">Click each team to review their conclusion.</div><div id="findings-card"></div></div><button class="phase-continue" onclick="goToPhase(5)">Determine Root Cause &rsaquo;</button></div>
+<div class="phase-block" id="phase-5"><h2 class="sec">Phase 5 &mdash; Root Cause and Discrepancy Report</h2><div class="secline"></div>
+<p class="body">You now have all four findings. Determine the actual root cause, then write the Discrepancy Report yourself, using the same format from Lesson 2.5.</p><div class="card"><h2>What Is the Actual Root Cause?</h2><div class="hint">Choose the finding that is actually supported by all four teams' evidence together.</div><div class="scenario-text">Structures found no mechanical damage (but flagged recent vibration exposure). EPS found the power path healthy. GNC found the raw switch signal chattering instead of transitioning cleanly. C&amp;DH/FSW found their 500ms debounce logic behaving exactly as designed. <b>What caused the motor to keep running for 3.8 seconds?</b></div><div id="rootcause-decision-card"></div></div><div class="card"><h2>Write the Discrepancy Report</h2>
+    <div class="hint">Use the same DR format from Lesson 2.5. Draft each field, then reveal a model answer to self-check.</div>
+    <div class="scenario-text">Write a complete DR for this anomaly: Problem Description, As-Run vs. Expected, Immediate Containment Action already taken, Root Cause, and Recommended Disposition.</div>
+    <label class="exercise-label" for="fa-dr-problem">Problem Description / As-Run vs. Expected</label><textarea class="exercise-field" id="fa-dr-problem" rows="2" placeholder="What was observed, and how does it differ from expected?"></textarea><label class="exercise-label" for="fa-dr-containment">Immediate Containment Action</label><textarea class="exercise-field" id="fa-dr-containment" rows="2" placeholder="What was already done to stop the situation getting worse?"></textarea><label class="exercise-label" for="fa-dr-rootcause">Root Cause</label><textarea class="exercise-field" id="fa-dr-rootcause" rows="2" placeholder="The actual system-level cause, not just a symptom."></textarea><label class="exercise-label" for="fa-dr-disposition">Recommended Disposition</label><textarea class="exercise-field" id="fa-dr-disposition" rows="2" placeholder="Use-As-Is, Repair, Rework, or Scrap -- and what corrective action, if any?"></textarea>
+    <button class="dopt" id="fa-dr-reveal-btn" style="margin-top:12px; text-align:center;">Compare to a model answer &rsaquo;</button>
+    <div class="dfeedback" id="fa-dr-modelbox">
+      <span class="dtag">MODEL ANSWER</span>
+      <p><b>Problem Description / As-Run vs. Expected:</b> During flatsat SADA deployment, the inhibit switch first registered TRIPPED at T+42.3s. Per design, the drive motor should cut off within 500ms of a stable TRIPPED state. The motor instead continued actuating for 3.8 additional seconds before Test Conductor hold.</p><p><b>Immediate Containment Action:</b> Motor circuit safed via GSE emergency cutoff; no hardware damage observed on initial inspection.</p><p><b>Root Cause:</b> The inhibit switch produced electrical contact chatter (intermittent TRIPPED/not-TRIPPED transitions) rather than a single clean transition, likely aggravated by a random vibration test performed 3 days prior. The flight software's 500ms debounce filter, while functioning exactly as designed, reset each time the signal bounced and never accumulated 500ms of continuously stable signal until the chatter settled on its own at T+46.1s. This is a system-level interaction between marginal-but-within-spec switch behavior and a debounce threshold not tolerant of that behavior &mdash; not a failure of any single component.</p><p><b>Recommended Disposition:</b> Rework. Replacing the switch alone would not fix this if the new switch also chatters under vibration. Recommend re-evaluating the debounce threshold and/or switch mounting to ensure margin against contact chatter following vibration exposure, then re-verifying with a repeat vibration-then-deployment test before this configuration is accepted for flight.</p>
+      <ul class="exercise-checklist"><li>Does your root cause name the interaction (chatter + debounce threshold), not just "software bug" or "switch failure"?</li><li>Does your disposition address the actual cause -- would simply replacing the switch fix this?</li></ul>
+    </div>
+    </div>
+<div class="keypoint gold"><div class="kt">ASSESSMENT COMPLETE</div><p>Notice that every individual CSTM/ISTM-style check in this investigation passed: the switch was mechanically fine, the power path was in spec, and the software followed its logic exactly as written. The anomaly only existed at the system level, in how those individually-healthy pieces interacted &mdash; which is exactly why ATLO verification never stops at the component level, and why this investigation needed all four teams to solve.</p></div>
+</div>
+
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+
+<script>
+const ACCORDIONS = [{"mount": "findings-card", "items": [{"name": "Structures", "sub": "Mechanical & environmental", "body": "No mechanical damage found; the switch meets its physical specification, mounting torque and witness marks intact, no FOD in the mechanism. Flagged for the team: this unit completed a random vibration test 3 days before this deployment test, within qualification levels."}, {"name": "EPS", "sub": "Power & motor driver", "body": "Motor driver relay coil measured 84 &#937;, within its 76.5&ndash;93.5 &#937; spec band. Bus voltage at the motor driver connector was a steady 28.1 VDC throughout the entire event, with no dropouts. Power path ruled out as a cause."}, {"name": "GNC / Telemetry", "sub": "Raw signal data", "body": "Raw inhibit switch telemetry shows the signal bouncing repeatedly between TRIPPED and not-TRIPPED for several seconds, rather than making one clean transition, before finally settling at T+46.1s."}, {"name": "C&amp;DH / FSW", "sub": "Cutoff logic", "body": "The 500ms debounce filter requires a continuously stable TRIPPED signal before commanding cutoff. Every bounce in the raw signal reset that timer, so 500ms of stable signal was never accumulated until the chatter settled on its own. The software executed its logic correctly throughout."}]}];
+ACCORDIONS.forEach(acc => {
+  const mount = document.getElementById(acc.mount);
+  if (!mount) return;
+  acc.items.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'comp';
+    let exHtml = '';
+    if (c.good || c.bad) {
+      exHtml = '<div class="ex">' +
+        (c.good ? '<div class="good"><span class="lbl">GOOD</span>' + c.good + '</div>' : '') +
+        (c.bad ? '<div class="bad"><span class="lbl">VAGUE</span>' + c.bad + '</div>' : '') +
+        '</div>';
+    }
+    d.innerHTML = '<button><span class="dot"></span><span class="name">' + c.name +
+      '</span><span class="sub">' + (c.sub || '') + '</span><span class="chev">&#8250;</span></button>' +
+      '<div class="body"><p>' + c.body + '</p>' + exHtml + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('open'));
+    mount.appendChild(d);
+  });
+});
+
+const QUIZ = [];
+const quizMount = document.getElementById('quiz');
+if (quizMount) {
+  QUIZ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<div class="qn">QUESTION ' + (i + 1) + '</div>' +
+      '<div class="qt">' + q.q + '</div>' +
+      '<button>Reveal what a strong answer covers &#8250;</button>' +
+      '<div class="ans">' + q.a + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('revealed'));
+    quizMount.appendChild(d);
+  });
+}
+
+const CHAINS = [];
+CHAINS.forEach(chain => {
+  const mount = document.getElementById(chain.mount);
+  if (!mount) return;
+  chain.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'chain-node' + (n.critical ? ' critical' : '');
+    el.setAttribute('tabindex', '0');
+    el.innerHTML = '<div class="cn-title">' + n.title + '</div>' +
+      (n.sub ? '<div class="cn-sub">' + n.sub + '</div>' : '') +
+      '<div class="tip"><h4>' + n.title + '</h4><p>' + n.detail + '</p></div>';
+    mount.appendChild(el);
+  });
+});
+
+const DECISIONS = [{"mount": "rootcause-decision-card", "options": [{"text": "The inhibit switch is defective and should simply be replaced.", "correct": false, "feedback": "Structures found no mechanical damage or out-of-spec condition &mdash; the switch isn't defective in the way a broken part would be. Replacing it without addressing why it chattered risks the exact same anomaly recurring with the replacement."}, {"text": "The EPS motor driver circuit has an intermittent fault that should be reworked.", "correct": false, "feedback": "EPS confirmed the power path was in spec and stable throughout the event, with no dropouts recorded. Nothing in the evidence implicates the power/driver circuit."}, {"text": "The flight software has a bug in its cutoff logic and needs to be corrected.", "correct": false, "feedback": "C&amp;DH/FSW confirmed the software executed its 500ms debounce logic exactly as designed. The logic itself has no bug &mdash; its underlying assumption about switch behavior is what didn't hold here, which is a different kind of problem than a coding error."}, {"text": "A system-level interaction: the switch developed electrical contact chatter (likely aggravated by recent vibration exposure), and the software's 500ms debounce filter reset every time the signal bounced, so cutoff was never commanded until the chatter settled on its own.", "correct": true, "feedback": "Correct. Every individual component passed its own check &mdash; the anomaly only exists in how a marginal-but-in-spec switch behavior interacted with a debounce threshold that wasn't tolerant of it. This is exactly why the investigation needed all four teams' data together, and why the disposition has to address the interaction, not just one part."}]}];
+DECISIONS.forEach(dec => {
+  const mount = document.getElementById(dec.mount);
+  if (!mount) return;
+  const feedback = document.createElement('div');
+  feedback.className = 'dfeedback';
+  mount.appendChild(feedback);
+  let answered = false;
+  dec.options.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    const btn = document.createElement('button');
+    btn.className = 'dopt';
+    btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
+      feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
+        '</span>' + opt.feedback;
+    });
+    mount.insertBefore(btn, feedback);
+  });
+});
+
+
+document.getElementById('fa-structures-reveal-btn').addEventListener('click', () => {
+  const box = document.getElementById('fa-structures-modelbox');
+  box.classList.add('show', 'correct');
+});
+document.getElementById('fa-eps-reveal-btn').addEventListener('click', () => {
+  const box = document.getElementById('fa-eps-modelbox');
+  box.classList.add('show', 'correct');
+});
+document.getElementById('fa-gnc-reveal-btn').addEventListener('click', () => {
+  const box = document.getElementById('fa-gnc-modelbox');
+  box.classList.add('show', 'correct');
+});
+document.getElementById('fa-cdh-reveal-btn').addEventListener('click', () => {
+  const box = document.getElementById('fa-cdh-modelbox');
+  box.classList.add('show', 'correct');
+});
+document.getElementById('fa-dr-reveal-btn').addEventListener('click', () => {
+  const box = document.getElementById('fa-dr-modelbox');
+  box.classList.add('show', 'correct');
+});
+(() => {
+  const TEAM_NAMES = {structures:'Structures', eps:'EPS', gnc:'GNC', cdh:'C&DH / FSW'};
+  let selectedTeam = null;
+
+  window.goToPhase = function(n) {
+    document.querySelectorAll('.phase-block').forEach(el => el.classList.remove('active'));
+    document.getElementById('phase-' + n).classList.add('active');
+    document.querySelectorAll('.step').forEach((el, i) => {
+      el.classList.toggle('done', i < n - 1);
+      el.classList.toggle('current', i === n - 1);
+    });
+    const target = document.getElementById('phase-' + n);
+    window.scrollTo({top: target.offsetTop - 90, behavior: 'smooth'});
+  };
+
+  document.querySelectorAll('.team-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.team-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedTeam = card.dataset.team;
+      document.getElementById('phase2-continue').disabled = false;
+
+      document.querySelectorAll('.team-variant').forEach(v => v.classList.remove('active'));
+      const variant = document.getElementById('variant-' + selectedTeam);
+      if (variant) variant.classList.add('active');
+
+      const label = document.getElementById('your-team-label');
+      if (label) label.textContent = TEAM_NAMES[selectedTeam];
+    });
+  });
+})();
+
+</script>
+</body>
+</html>
