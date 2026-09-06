@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Lesson 2.5: Anomaly Reporting & Disposition</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badge { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:860px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; display:flex;
+            align-items:center; gap:10px; flex-wrap:wrap; }
+  .slochip { background:var(--bgdiag); border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:11px; letter-spacing:.03em;
+             padding:3px 9px; border-radius:20px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.15; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:26px; }
+
+  .card { background:var(--bgdiag); border:1px solid var(--graylt);
+          border-radius:10px; padding:18px; margin-bottom:26px; }
+  .card > h2 { text-align:center; color:var(--navy); font-size:13px;
+               letter-spacing:.05em; text-transform:uppercase;
+               border-bottom:1px solid var(--graylt); padding-bottom:10px; margin-bottom:6px; }
+  .hint { text-align:center; color:var(--gray); font-size:11.5px; margin-bottom:12px; }
+
+  /* accordion (roles, phases, procedure anatomy, test-plan elements, deliverables) */
+  .comp { background:#fff; border:1px solid var(--graylt); border-radius:8px;
+          margin-bottom:10px; overflow:hidden; }
+  .comp button { all:unset; display:flex; width:100%; align-items:center;
+                 gap:12px; padding:13px 16px; cursor:pointer; }
+  .comp button:hover { background:var(--bglight); }
+  .comp .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex:none; }
+  .comp .name { font-weight:bold; color:var(--navy); font-size:14.5px; }
+  .comp .sub { color:var(--gray); font-size:12px; margin-left:auto; padding-right:8px; }
+  .comp .chev { color:var(--green); font-weight:bold; transition:transform .2s; flex:none; }
+  .comp.open .chev { transform:rotate(90deg); }
+  .comp .body { display:none; padding:0 16px 15px 38px; color:var(--navy2);
+                font-size:13.5px; line-height:1.6; }
+  .comp.open .body { display:block; }
+  .comp .body p { margin-bottom:8px; }
+  .comp .body p:last-child { margin-bottom:0; }
+
+  .ex { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .ex > div { flex:1; min-width:200px; border-radius:6px; padding:8px 11px; font-size:12.5px; }
+  .ex .good { background:var(--greenlt); border-left:3px solid var(--green); }
+  .ex .bad { background:var(--bglight); border-left:3px solid var(--gray); }
+  .ex .lbl { font-weight:bold; font-size:10.5px; letter-spacing:.04em; display:block; margin-bottom:3px; }
+  .ex .good .lbl { color:var(--green); }
+  .ex .bad .lbl { color:var(--gray); }
+
+  h2.sec { color:var(--navy2); font-size:19px; margin:30px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:12px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; text-align:justify; }
+  ul.body-list { margin:0 0 15px 20px; }
+  ul.body-list li { font-size:14.5px; line-height:1.6; margin-bottom:7px; color:var(--black); }
+
+  .keypoint { background:var(--greenlt); border:1px solid var(--green);
+              border-left:4px solid var(--green); border-radius:4px;
+              padding:14px 18px; margin:8px 0 26px; }
+  .keypoint .kt { color:var(--green); font-weight:bold; font-size:12.5px;
+                  letter-spacing:.04em; margin-bottom:5px; }
+  .keypoint p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .keypoint.gold { background:var(--goldlt); border-color:var(--gold); }
+  .keypoint.gold .kt { color:var(--gold); }
+
+  /* chain diagram (mission lifecycle / critical path) */
+  .chain-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+  .chain-node { position:relative; flex:1 1 110px; min-width:100px; max-width:150px;
+                background:#fff; border:2px solid var(--graylt); border-radius:8px;
+                padding:12px 10px; text-align:center; cursor:pointer; }
+  .chain-node .cn-title { font-weight:bold; color:var(--navy); font-size:12.5px; line-height:1.3; }
+  .chain-node .cn-sub { color:var(--gray); font-size:10.5px; margin-top:3px; }
+  .chain-node.critical { border-color:var(--gold); background:var(--goldlt); }
+  .chain-node.critical .cn-title { color:#92400E; }
+  .chain-node:hover, .chain-node:focus { border-color:var(--green); outline:none; }
+  .chain-node .tip { position:absolute; left:50%; top:110%; transform:translateX(-50%);
+               width:230px; max-width:70vw; background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px; padding:11px 13px;
+               box-shadow:0 8px 22px rgba(11,24,41,.30); opacity:0; visibility:hidden;
+               transition:opacity .15s; pointer-events:none; z-index:30; text-align:left; }
+  .chain-node.critical .tip { border-left-color:var(--gold); }
+  .chain-node:hover .tip, .chain-node:focus .tip { opacity:1; visibility:visible; }
+  .chain-node .tip h4 { color:var(--navy); font-size:12.5px; margin:0 0 4px; }
+  .chain-node .tip p { color:var(--navy2); font-size:11.5px; line-height:1.5; margin:0; font-weight:normal; }
+  .chain-legend { display:flex; gap:18px; justify-content:center; margin-top:34px;
+                  font-size:11px; color:var(--gray); flex-wrap:wrap; }
+  .chain-legend span { display:inline-flex; align-items:center; gap:5px; }
+  .chain-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .chain-legend .lc1 { background:#fff; border:2px solid var(--graylt); }
+  .chain-legend .lc2 { background:var(--goldlt); border:2px solid var(--gold); }
+
+  /* decision scenario */
+  .scenario-text { font-size:14px; line-height:1.65; color:var(--black);
+                    background:#fff; border:1px solid var(--graylt); border-radius:8px;
+                    padding:16px 18px; margin-bottom:14px; }
+  .dopt { display:block; width:100%; text-align:left; background:#fff;
+          border:1.5px solid var(--graylt); border-radius:8px; padding:12px 15px;
+          margin-bottom:9px; font-size:13.5px; color:var(--navy); cursor:pointer;
+          font-family:inherit; }
+  .dopt:hover { border-color:var(--navy3); background:var(--bglight); }
+  .dopt .letter { display:inline-block; width:20px; height:20px; border-radius:50%;
+                   background:var(--bgdiag); color:var(--navy2); font-weight:bold;
+                   font-size:11px; text-align:center; line-height:20px; margin-right:9px; }
+  .dopt.chosen.correct { border-color:var(--green); background:var(--greenlt); }
+  .dopt.chosen.correct .letter { background:var(--green); color:#fff; }
+  .dopt.chosen.wrong { border-color:var(--gray); background:var(--bglight); }
+  .dopt.disabled { cursor:default; }
+  .dfeedback { display:none; border-radius:8px; padding:14px 18px; margin-top:6px;
+               font-size:13.5px; line-height:1.6; }
+  .dfeedback.show { display:block; }
+  .dfeedback.correct { background:var(--greenlt); border-left:4px solid var(--green); color:var(--navy2); }
+  .dfeedback.wrong { background:var(--bglight); border-left:4px solid var(--gray); color:var(--navy2); }
+  .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .dfeedback.correct .dtag { color:var(--green); }
+  .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
+
+  /* quiz */
+  .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
+       margin-bottom:12px; }
+  .q .qn { color:var(--gray); font-weight:bold; font-size:11px; letter-spacing:.05em; }
+  .q .qt { color:var(--navy); font-size:14.5px; line-height:1.5; margin:4px 0 10px; }
+  .q button { all:unset; cursor:pointer; color:var(--green); font-weight:bold;
+              font-size:12.5px; }
+  .q button:hover { text-decoration:underline; }
+  .q .ans { display:none; background:var(--bglight); border-left:3px solid var(--gold);
+            padding:10px 14px; margin-top:10px; color:var(--navy2);
+            font-size:13px; line-height:1.6; }
+  .q.revealed .ans { display:block; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 2: Execution</div></div>
+  </div>
+  <div class="badge">LESSON 2.5</div>
+</div>
+
+<main>
+  <div class="lesnum">Lesson 2.5 &mdash; Interactive <span class="slochip">SLO 9</span></div>
+  <h1>Anomaly Reporting &amp; Disposition</h1>
+  <div class="rule"></div>
+  <div class="hook">Calling a hold is the easy part. This lesson is about what happens next &mdash; the actual document that turns "something looked wrong" into a tracked, resolved, and closed record.</div>
+
+  <h2 class="sec">The Discrepancy Report (DR)</h2><div class="secline"></div>
+<p class="body">Every anomaly that stops a procedure &mdash; a value outside expected range, a mechanical fit that doesn't match the drawing, a component that fails a CSTM check &mdash; gets documented in a Discrepancy Report. NPR 8735.2, NASA's Hardware Quality Assurance Requirements, governs this process: how non-conformances are documented, investigated, dispositioned, and closed. You are not expected to memorize the document, only to recognize that the DR process you are about to practice is the same one it defines.</p>
+<div class="card"><h2>Anatomy of a Discrepancy Report</h2><div class="hint">Click each section to see what it captures and why.</div><div id="dr-anatomy-card"></div></div>
+<h2 class="sec">The Four Disposition Categories</h2><div class="secline"></div>
+<p class="body">Every DR ends with a disposition &mdash; a formal decision about what happens to the hardware:</p>
+<ul class="body-list"><li><b>Use-As-Is:</b> the deviation from the drawing or spec is accepted without any physical change, because engineering analysis shows it does not affect form, fit, or function</li><li><b>Repair:</b> the defect is corrected by an approved method that does not fully restore the original drawing configuration, but makes the hardware acceptable for use</li><li><b>Rework:</b> the hardware is brought back into full compliance with the original drawing or specification</li><li><b>Scrap:</b> the hardware cannot be made acceptable and is removed from use entirely</li></ul>
+<div class="card"><h2>Exercise &mdash; Write a Discrepancy Report</h2>
+    <div class="hint">Draft your DR, then reveal a model answer to self-check.</div>
+    <div class="scenario-text">During post-install inspection, a structural bracket bolt is found torqued to 22 in-lbs against a specified value of 35 &plusmn;3 in-lbs. No other symptoms are observed. Write the Problem Description and the As-Run vs. Expected fields for this DR, then recommend a disposition.</div>
+    <label class="exercise-label" for="dr25-problem">Problem Description / As-Run vs. Expected</label><textarea class="exercise-field" id="dr25-problem" rows="2" placeholder="What was observed, and how does it differ from spec?"></textarea><label class="exercise-label" for="dr25-disposition">Recommended Disposition</label><textarea class="exercise-field" id="dr25-disposition" rows="2" placeholder="Use-As-Is, Repair, Rework, or Scrap -- and why?"></textarea>
+    <button class="dopt" id="dr25-reveal-btn" style="margin-top:12px; text-align:center;">Compare to a model answer &rsaquo;</button>
+    <div class="dfeedback" id="dr25-modelbox">
+      <span class="dtag">MODEL ANSWER</span>
+      <p><b>Problem Description:</b> During post-install torque verification, bracket bolt B-14 was found torqued to 22 in-lbs. Specified torque per the installation procedure is 35 &plusmn;3 in-lbs. No visible damage to the fastener, bracket, or adjacent structure was observed.</p><p><b>Recommended Disposition: Rework.</b> The fastener and joint are undamaged, so this is not a Repair or Scrap situation. Since the fix is simply re-torquing to the originally specified value &mdash; not an accepted deviation from it &mdash; this is Rework, not Use-As-Is: re-torque to 35 &plusmn;3 in-lbs and re-verify with a witness mark.</p>
+      <ul class="exercise-checklist"><li>Did you state both the observed value and the specified value?</li><li>Does your disposition match what the fastener and structure actually need -- not just the easiest option?</li></ul>
+    </div>
+    </div>
+<div class="card"><h2>Scenario &mdash; Choosing the Right Disposition</h2><div class="hint">Read the situation, then choose the correct disposition.</div><div class="scenario-text">A connector pin is found slightly bent during inspection. A technician carefully re-forms it using an approved pin tool, and it then passes a go/no-go gauge check to the original specification. <b>What is the correct disposition?</b></div><div id="dr-disposition-decision-card"></div></div>
+<div class="keypoint"><div class="kt">KEY POINT</div><p>The disposition is not a formality &mdash; it is the permanent record of exactly what happened to this specific piece of flight hardware and why it was accepted. Anyone reviewing the as-built configuration later, including at PSR (Lesson 2.8), relies on that record being accurate.</p></div>
+<h2 class="sec">Lesson Quiz Preview</h2><div class="secline"></div><div class="hint" style="text-align:left; margin-bottom:14px;">Think through your answer first, then reveal what a strong answer covers.</div><div id="quiz"></div>
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+
+<script>
+const ACCORDIONS = [{"mount": "dr-anatomy-card", "items": [{"name": "Problem Description", "sub": "What, when, how observed", "body": "A factual, specific account of what was observed, when, and under what conditions &mdash; no speculation about cause yet, just the observation itself."}, {"name": "As-Run vs. Expected", "sub": "The actual gap", "body": "The specific value or condition that was actually seen, next to the specific value or condition that was expected &mdash; the same discipline as a procedure's pass/fail criterion (Lesson 1.4), applied after the fact."}, {"name": "Immediate Containment Action", "sub": "What was done right then", "body": "Whatever was done in the moment to prevent the situation from getting worse &mdash; stopping the procedure, isolating the hardware, tagging it out of service &mdash; before the investigation even starts."}, {"name": "Root Cause (if known)", "sub": "Why it happened", "body": "The underlying reason for the discrepancy, once investigated &mdash; not always known at the time the DR is first written, and sometimes added in a later revision."}, {"name": "Disposition & Approval", "sub": "What happens to the hardware", "body": "The formal decision &mdash; Use-As-Is, Repair, Rework, or Scrap &mdash; along with the signatures of whoever is required to approve it, typically including the responsible engineer and QA, scaled up to the SE or PM for more severe discrepancies."}]}];
+ACCORDIONS.forEach(acc => {
+  const mount = document.getElementById(acc.mount);
+  if (!mount) return;
+  acc.items.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'comp';
+    let exHtml = '';
+    if (c.good || c.bad) {
+      exHtml = '<div class="ex">' +
+        (c.good ? '<div class="good"><span class="lbl">GOOD</span>' + c.good + '</div>' : '') +
+        (c.bad ? '<div class="bad"><span class="lbl">VAGUE</span>' + c.bad + '</div>' : '') +
+        '</div>';
+    }
+    d.innerHTML = '<button><span class="dot"></span><span class="name">' + c.name +
+      '</span><span class="sub">' + (c.sub || '') + '</span><span class="chev">&#8250;</span></button>' +
+      '<div class="body"><p>' + c.body + '</p>' + exHtml + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('open'));
+    mount.appendChild(d);
+  });
+});
+
+const QUIZ = [{"q": "What does NPR 8735.2 govern, and where does it apply in this lesson?", "a": "NASA's Hardware Quality Assurance Requirements &mdash; it governs the non-conformance and Discrepancy Report process, corrective actions, and quality documentation during integration, which is exactly the process this lesson's DR exercise practices."}, {"q": "What is the difference between a Repair disposition and a Rework disposition?", "a": "Repair corrects a defect using an approved method that does not fully restore the original drawing configuration but makes the hardware acceptable. Rework brings the hardware back into full compliance with the original drawing or specification."}, {"q": "When is a Use-As-Is disposition appropriate?", "a": "When engineering analysis shows a deviation from the drawing or spec does not affect form, fit, or function &mdash; the hardware is accepted without any physical change."}, {"q": "What fields belong in the \"Problem Description\" section of a DR?", "a": "What was observed, when and how it was observed, and how it differs from the expected or specified condition (As-Run vs. Expected)."}, {"q": "ATLO Scenario: A bracket bolt is found under-torqued with no damage to the fastener or structure. Why is \"Rework,\" not \"Use-As-Is,\" the correct disposition?", "a": "Use-As-Is means accepting the deviation permanently. Here, the fastener is undamaged and can simply be re-torqued to the originally specified value &mdash; there is no reason to accept an out-of-spec condition when full compliance is achievable, so it is corrected (Reworked), not accepted."}];
+const quizMount = document.getElementById('quiz');
+if (quizMount) {
+  QUIZ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<div class="qn">QUESTION ' + (i + 1) + '</div>' +
+      '<div class="qt">' + q.q + '</div>' +
+      '<button>Reveal what a strong answer covers &#8250;</button>' +
+      '<div class="ans">' + q.a + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('revealed'));
+    quizMount.appendChild(d);
+  });
+}
+
+const CHAINS = [];
+CHAINS.forEach(chain => {
+  const mount = document.getElementById(chain.mount);
+  if (!mount) return;
+  chain.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'chain-node' + (n.critical ? ' critical' : '');
+    el.setAttribute('tabindex', '0');
+    el.innerHTML = '<div class="cn-title">' + n.title + '</div>' +
+      (n.sub ? '<div class="cn-sub">' + n.sub + '</div>' : '') +
+      '<div class="tip"><h4>' + n.title + '</h4><p>' + n.detail + '</p></div>';
+    mount.appendChild(el);
+  });
+});
+
+const DECISIONS = [{"mount": "dr-disposition-decision-card", "options": [{"text": "Use-As-Is, since the pin now passes inspection.", "correct": false, "feedback": "Use-As-Is means accepting a deviation without any physical correction. Here, a physical correction (re-forming the pin) was already performed &mdash; the disposition needs to reflect that a corrective action was taken."}, {"text": "Repair, since the pin was corrected by an approved method and now passes the specified inspection criteria.", "correct": true, "feedback": "Correct. An approved corrective action was performed and the hardware now meets its acceptance criteria &mdash; that is a Repair. (If the connector had instead been fully replaced to restore the original drawing configuration exactly, Rework would also be defensible; re-forming an existing pin in place is the textbook Repair case.)"}, {"text": "Scrap, since any bent pin indicates the connector is no longer trustworthy.", "correct": false, "feedback": "Scrap is for hardware that cannot be made acceptable. This connector was corrected and verified to meet spec &mdash; discarding functional, verified hardware is not warranted just because it required a repair."}, {"text": "No disposition is needed since the pin passes inspection now.", "correct": false, "feedback": "Every discrepancy that was documented requires a formal disposition and sign-off, regardless of whether the end result looks fine &mdash; the record of what happened and why it's acceptable has to exist for anyone reviewing this hardware later."}]}];
+DECISIONS.forEach(dec => {
+  const mount = document.getElementById(dec.mount);
+  if (!mount) return;
+  const feedback = document.createElement('div');
+  feedback.className = 'dfeedback';
+  mount.appendChild(feedback);
+  let answered = false;
+  dec.options.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    const btn = document.createElement('button');
+    btn.className = 'dopt';
+    btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
+      feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
+        '</span>' + opt.feedback;
+    });
+    mount.insertBefore(btn, feedback);
+  });
+});
+
+
+document.getElementById('dr25-reveal-btn').addEventListener('click', () => {
+  const box = document.getElementById('dr25-modelbox');
+  box.classList.add('show', 'correct');
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Lesson 2.6: Environmental Test Readiness</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badge { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:860px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; display:flex;
+            align-items:center; gap:10px; flex-wrap:wrap; }
+  .slochip { background:var(--bgdiag); border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:11px; letter-spacing:.03em;
+             padding:3px 9px; border-radius:20px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.15; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:26px; }
+
+  .card { background:var(--bgdiag); border:1px solid var(--graylt);
+          border-radius:10px; padding:18px; margin-bottom:26px; }
+  .card > h2 { text-align:center; color:var(--navy); font-size:13px;
+               letter-spacing:.05em; text-transform:uppercase;
+               border-bottom:1px solid var(--graylt); padding-bottom:10px; margin-bottom:6px; }
+  .hint { text-align:center; color:var(--gray); font-size:11.5px; margin-bottom:12px; }
+
+  /* accordion (roles, phases, procedure anatomy, test-plan elements, deliverables) */
+  .comp { background:#fff; border:1px solid var(--graylt); border-radius:8px;
+          margin-bottom:10px; overflow:hidden; }
+  .comp button { all:unset; display:flex; width:100%; align-items:center;
+                 gap:12px; padding:13px 16px; cursor:pointer; }
+  .comp button:hover { background:var(--bglight); }
+  .comp .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex:none; }
+  .comp .name { font-weight:bold; color:var(--navy); font-size:14.5px; }
+  .comp .sub { color:var(--gray); font-size:12px; margin-left:auto; padding-right:8px; }
+  .comp .chev { color:var(--green); font-weight:bold; transition:transform .2s; flex:none; }
+  .comp.open .chev { transform:rotate(90deg); }
+  .comp .body { display:none; padding:0 16px 15px 38px; color:var(--navy2);
+                font-size:13.5px; line-height:1.6; }
+  .comp.open .body { display:block; }
+  .comp .body p { margin-bottom:8px; }
+  .comp .body p:last-child { margin-bottom:0; }
+
+  .ex { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .ex > div { flex:1; min-width:200px; border-radius:6px; padding:8px 11px; font-size:12.5px; }
+  .ex .good { background:var(--greenlt); border-left:3px solid var(--green); }
+  .ex .bad { background:var(--bglight); border-left:3px solid var(--gray); }
+  .ex .lbl { font-weight:bold; font-size:10.5px; letter-spacing:.04em; display:block; margin-bottom:3px; }
+  .ex .good .lbl { color:var(--green); }
+  .ex .bad .lbl { color:var(--gray); }
+
+  h2.sec { color:var(--navy2); font-size:19px; margin:30px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:12px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; text-align:justify; }
+  ul.body-list { margin:0 0 15px 20px; }
+  ul.body-list li { font-size:14.5px; line-height:1.6; margin-bottom:7px; color:var(--black); }
+
+  .keypoint { background:var(--greenlt); border:1px solid var(--green);
+              border-left:4px solid var(--green); border-radius:4px;
+              padding:14px 18px; margin:8px 0 26px; }
+  .keypoint .kt { color:var(--green); font-weight:bold; font-size:12.5px;
+                  letter-spacing:.04em; margin-bottom:5px; }
+  .keypoint p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .keypoint.gold { background:var(--goldlt); border-color:var(--gold); }
+  .keypoint.gold .kt { color:var(--gold); }
+
+  /* chain diagram (mission lifecycle / critical path) */
+  .chain-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+  .chain-node { position:relative; flex:1 1 110px; min-width:100px; max-width:150px;
+                background:#fff; border:2px solid var(--graylt); border-radius:8px;
+                padding:12px 10px; text-align:center; cursor:pointer; }
+  .chain-node .cn-title { font-weight:bold; color:var(--navy); font-size:12.5px; line-height:1.3; }
+  .chain-node .cn-sub { color:var(--gray); font-size:10.5px; margin-top:3px; }
+  .chain-node.critical { border-color:var(--gold); background:var(--goldlt); }
+  .chain-node.critical .cn-title { color:#92400E; }
+  .chain-node:hover, .chain-node:focus { border-color:var(--green); outline:none; }
+  .chain-node .tip { position:absolute; left:50%; top:110%; transform:translateX(-50%);
+               width:230px; max-width:70vw; background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px; padding:11px 13px;
+               box-shadow:0 8px 22px rgba(11,24,41,.30); opacity:0; visibility:hidden;
+               transition:opacity .15s; pointer-events:none; z-index:30; text-align:left; }
+  .chain-node.critical .tip { border-left-color:var(--gold); }
+  .chain-node:hover .tip, .chain-node:focus .tip { opacity:1; visibility:visible; }
+  .chain-node .tip h4 { color:var(--navy); font-size:12.5px; margin:0 0 4px; }
+  .chain-node .tip p { color:var(--navy2); font-size:11.5px; line-height:1.5; margin:0; font-weight:normal; }
+  .chain-legend { display:flex; gap:18px; justify-content:center; margin-top:34px;
+                  font-size:11px; color:var(--gray); flex-wrap:wrap; }
+  .chain-legend span { display:inline-flex; align-items:center; gap:5px; }
+  .chain-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .chain-legend .lc1 { background:#fff; border:2px solid var(--graylt); }
+  .chain-legend .lc2 { background:var(--goldlt); border:2px solid var(--gold); }
+
+  /* decision scenario */
+  .scenario-text { font-size:14px; line-height:1.65; color:var(--black);
+                    background:#fff; border:1px solid var(--graylt); border-radius:8px;
+                    padding:16px 18px; margin-bottom:14px; }
+  .dopt { display:block; width:100%; text-align:left; background:#fff;
+          border:1.5px solid var(--graylt); border-radius:8px; padding:12px 15px;
+          margin-bottom:9px; font-size:13.5px; color:var(--navy); cursor:pointer;
+          font-family:inherit; }
+  .dopt:hover { border-color:var(--navy3); background:var(--bglight); }
+  .dopt .letter { display:inline-block; width:20px; height:20px; border-radius:50%;
+                   background:var(--bgdiag); color:var(--navy2); font-weight:bold;
+                   font-size:11px; text-align:center; line-height:20px; margin-right:9px; }
+  .dopt.chosen.correct { border-color:var(--green); background:var(--greenlt); }
+  .dopt.chosen.correct .letter { background:var(--green); color:#fff; }
+  .dopt.chosen.wrong { border-color:var(--gray); background:var(--bglight); }
+  .dopt.disabled { cursor:default; }
+  .dfeedback { display:none; border-radius:8px; padding:14px 18px; margin-top:6px;
+               font-size:13.5px; line-height:1.6; }
+  .dfeedback.show { display:block; }
+  .dfeedback.correct { background:var(--greenlt); border-left:4px solid var(--green); color:var(--navy2); }
+  .dfeedback.wrong { background:var(--bglight); border-left:4px solid var(--gray); color:var(--navy2); }
+  .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .dfeedback.correct .dtag { color:var(--green); }
+  .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
+
+  /* quiz */
+  .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
+       margin-bottom:12px; }
+  .q .qn { color:var(--gray); font-weight:bold; font-size:11px; letter-spacing:.05em; }
+  .q .qt { color:var(--navy); font-size:14.5px; line-height:1.5; margin:4px 0 10px; }
+  .q button { all:unset; cursor:pointer; color:var(--green); font-weight:bold;
+              font-size:12.5px; }
+  .q button:hover { text-decoration:underline; }
+  .q .ans { display:none; background:var(--bglight); border-left:3px solid var(--gold);
+            padding:10px 14px; margin-top:10px; color:var(--navy2);
+            font-size:13px; line-height:1.6; }
+  .q.revealed .ans { display:block; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 2: Execution</div></div>
+  </div>
+  <div class="badge">LESSON 2.6</div>
+</div>
+
+<main>
+  <div class="lesnum">Lesson 2.6 &mdash; Interactive <span class="slochip">SLO 10</span></div>
+  <h1>Environmental Test Readiness</h1>
+  <div class="rule"></div>
+  <div class="hook">The vehicle works. Now it has to prove it keeps working after launch loads and the thermal extremes of space &mdash; and before any of that testing starts, a formal review decides whether the vehicle is actually ready for it.</div>
+
+  <h2 class="sec">What Environmental Testing Proves</h2><div class="secline"></div>
+<p class="body">Functional testing (Lesson 2.4) proves the vehicle works under comfortable, controlled conditions. Environmental testing proves it keeps working after being shaken by launch vibration, subjected to launch acoustics, and cycled through the thermal extremes and vacuum of space. A vehicle that passes every functional test but has never been environmentally tested has not actually been proven flightworthy.</p>
+<h2 class="sec">GEVS-7000 Awareness</h2><div class="secline"></div>
+<p class="body">The General Environmental Verification Standard (GEVS-7000) defines the environmental test types, test levels, and sequencing used for spacecraft acceptance and qualification &mdash; it is the reason environmental testing on this program follows a standard, predictable structure instead of an ad hoc one. As with NPR 7120.5 in earlier lessons, you are not expected to memorize GEVS-7000's contents &mdash; only to know it exists, know roughly what it governs, and recognize when a test decision is being made in reference to it.</p>
+<div class="card"><h2>What a Test Readiness Review (TRR) Checks</h2><div class="hint">Click each item to see what it verifies before an environmental test is allowed to begin.</div><div id="trr-checklist-card"></div></div>
+<div class="card"><h2>Scenario &mdash; An Unrelated Open DR Before TRR</h2><div class="hint">Read the situation, then decide.</div><div class="scenario-text">A Test Readiness Review is scheduled tomorrow for a thermal vacuum test. One Discrepancy Report remains open, written against a subsystem that will not be electrically powered or thermally cycled during this particular test. <b>Does this block TRR?</b></div><div id="trr-dr-decision-card"></div></div>
+<div class="keypoint"><div class="kt">KEY POINT</div><p>A TRR is not a formality that gets rubber-stamped whenever the schedule says it's time. It exists so that every open question about the vehicle's readiness &mdash; DRs, procedures, GSE, configuration &mdash; gets explicitly reviewed and either cleared or formally accepted, never silently ignored.</p></div>
+<h2 class="sec">Lesson Quiz Preview</h2><div class="secline"></div><div class="hint" style="text-align:left; margin-bottom:14px;">Think through your answer first, then reveal what a strong answer covers.</div><div id="quiz"></div>
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+
+<script>
+const ACCORDIONS = [{"mount": "trr-checklist-card", "items": [{"name": "Open DR Review", "sub": "Every one, not just the relevant ones", "body": "Every open Discrepancy Report is reviewed at TRR, even ones that seem unrelated to this specific test. Each one is either dispositioned or formally waived for this test with documented rationale &mdash; none are silently skipped."}, {"name": "Procedure Approval Status", "sub": "Current revision, validated", "body": "The test procedure is at its current approved revision and has already been validated on flatsat (Lesson 2.2) &mdash; the same procedure control rule from Lesson 1.4, checked again here."}, {"name": "GSE Calibration & Configuration", "sub": "Trustworthy equipment", "body": "All ground support equipment used in the test is within its calibration window and configured correctly for this specific test setup."}, {"name": "Facility & Schedule Readiness", "sub": "Is the chamber actually ready?", "body": "The test facility itself (a thermal vacuum chamber, a vibration table) is scheduled, available, and verified ready to receive the vehicle."}, {"name": "As-Built Configuration Match", "sub": "What's actually on the vehicle", "body": "The physical, as-built configuration of the vehicle matches its official configuration record &mdash; no undocumented changes since the last review."}]}];
+ACCORDIONS.forEach(acc => {
+  const mount = document.getElementById(acc.mount);
+  if (!mount) return;
+  acc.items.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'comp';
+    let exHtml = '';
+    if (c.good || c.bad) {
+      exHtml = '<div class="ex">' +
+        (c.good ? '<div class="good"><span class="lbl">GOOD</span>' + c.good + '</div>' : '') +
+        (c.bad ? '<div class="bad"><span class="lbl">VAGUE</span>' + c.bad + '</div>' : '') +
+        '</div>';
+    }
+    d.innerHTML = '<button><span class="dot"></span><span class="name">' + c.name +
+      '</span><span class="sub">' + (c.sub || '') + '</span><span class="chev">&#8250;</span></button>' +
+      '<div class="body"><p>' + c.body + '</p>' + exHtml + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('open'));
+    mount.appendChild(d);
+  });
+});
+
+const QUIZ = [{"q": "What does environmental testing prove that functional testing does not?", "a": "That the vehicle survives and continues to function after exposure to the actual mechanical, thermal, and electromagnetic environment of launch and space &mdash; not just that it works under comfortable lab conditions."}, {"q": "What does GEVS-7000 govern, and what level of familiarity is expected of an ATLO engineer?", "a": "It defines environmental test types, levels, and sequencing for spacecraft acceptance and qualification. You are not expected to memorize it &mdash; just to know it exists, roughly what it covers, and recognize when it is shaping a test decision."}, {"q": "List three things a Test Readiness Review (TRR) checks before an environmental test begins.", "a": "Any three of: open DRs that could affect the test dispositioned or explicitly reviewed, the test procedure approved at its current revision, GSE calibrated and configured correctly, the test facility scheduled and available, and the hardware configuration matching its as-built record."}, {"q": "Why is a TRR required even when the team is confident the vehicle is ready?", "a": "Confidence is not the same as a documented, cross-checked review. A TRR forces every open item &mdash; DRs, procedures, GSE, configuration &mdash; to be explicitly accounted for by more than one person's memory before hardware is committed to a test that cannot be undone."}, {"q": "ATLO Scenario: An open DR exists on a subsystem unrelated to tomorrow's thermal vacuum test. Should it be ignored at TRR since it doesn't affect this specific test?", "a": "No. It should still be brought to the TRR and explicitly reviewed or waived with documented rationale for this specific test, even if the conclusion is that it does not affect readiness. The rule is that every open item gets accounted for, not that unrelated items get silently skipped."}];
+const quizMount = document.getElementById('quiz');
+if (quizMount) {
+  QUIZ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<div class="qn">QUESTION ' + (i + 1) + '</div>' +
+      '<div class="qt">' + q.q + '</div>' +
+      '<button>Reveal what a strong answer covers &#8250;</button>' +
+      '<div class="ans">' + q.a + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('revealed'));
+    quizMount.appendChild(d);
+  });
+}
+
+const CHAINS = [];
+CHAINS.forEach(chain => {
+  const mount = document.getElementById(chain.mount);
+  if (!mount) return;
+  chain.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'chain-node' + (n.critical ? ' critical' : '');
+    el.setAttribute('tabindex', '0');
+    el.innerHTML = '<div class="cn-title">' + n.title + '</div>' +
+      (n.sub ? '<div class="cn-sub">' + n.sub + '</div>' : '') +
+      '<div class="tip"><h4>' + n.title + '</h4><p>' + n.detail + '</p></div>';
+    mount.appendChild(el);
+  });
+});
+
+const DECISIONS = [{"mount": "trr-dr-decision-card", "options": [{"text": "No &mdash; since the DR is on an unrelated subsystem, it can simply be ignored at this TRR.", "correct": false, "feedback": "Ignoring it entirely skips the review step that exists specifically to make that judgment explicit and documented. \"Probably unrelated\" in someone's head is not the same as a reviewed, recorded rationale."}, {"text": "Yes, automatically &mdash; no environmental test can proceed while any DR anywhere in the program remains open.", "correct": false, "feedback": "This overcorrects. Not every open DR blocks every test; a DR on a subsystem this test doesn't touch may reasonably be waived for this specific TRR. The point isn't zero open DRs everywhere &mdash; it's that nothing goes unreviewed."}, {"text": "Bring it to the TRR for explicit review. If the board agrees it does not affect this test or personnel safety, document a formal waiver for this specific test and proceed.", "correct": true, "feedback": "Correct. Every open DR gets reviewed at TRR, whether or not it turns out to matter for this particular test. The DR does not need to be closed to proceed &mdash; it needs to be explicitly, formally addressed rather than silently skipped or used to halt unrelated work."}, {"text": "Postpone the TRR until the unrelated DR is fully closed, regardless of relevance to this test.", "correct": false, "feedback": "This treats every open DR as an automatic schedule blocker regardless of relevance, which is not how TRR is meant to work and creates schedule impact with no safety or quality benefit."}]}];
+DECISIONS.forEach(dec => {
+  const mount = document.getElementById(dec.mount);
+  if (!mount) return;
+  const feedback = document.createElement('div');
+  feedback.className = 'dfeedback';
+  mount.appendChild(feedback);
+  let answered = false;
+  dec.options.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    const btn = document.createElement('button');
+    btn.className = 'dopt';
+    btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
+      feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
+        '</span>' + opt.feedback;
+    });
+    mount.insertBefore(btn, feedback);
+  });
+});
+
+
+</script>
+</body>
+</html>

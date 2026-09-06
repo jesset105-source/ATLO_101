@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Lesson 2.3 ISTM Exercise: Interface Safe-to-Mate (Flight Vehicle)</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badge { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:860px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; display:flex;
+            align-items:center; gap:10px; flex-wrap:wrap; }
+  .slochip { background:var(--bgdiag); border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:11px; letter-spacing:.03em;
+             padding:3px 9px; border-radius:20px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.15; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:26px; }
+
+  .card { background:var(--bgdiag); border:1px solid var(--graylt);
+          border-radius:10px; padding:18px; margin-bottom:26px; }
+  .card > h2 { text-align:center; color:var(--navy); font-size:13px;
+               letter-spacing:.05em; text-transform:uppercase;
+               border-bottom:1px solid var(--graylt); padding-bottom:10px; margin-bottom:6px; }
+  .hint { text-align:center; color:var(--gray); font-size:11.5px; margin-bottom:12px; }
+
+  /* accordion (roles, phases, procedure anatomy, test-plan elements, deliverables) */
+  .comp { background:#fff; border:1px solid var(--graylt); border-radius:8px;
+          margin-bottom:10px; overflow:hidden; }
+  .comp button { all:unset; display:flex; width:100%; align-items:center;
+                 gap:12px; padding:13px 16px; cursor:pointer; }
+  .comp button:hover { background:var(--bglight); }
+  .comp .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex:none; }
+  .comp .name { font-weight:bold; color:var(--navy); font-size:14.5px; }
+  .comp .sub { color:var(--gray); font-size:12px; margin-left:auto; padding-right:8px; }
+  .comp .chev { color:var(--green); font-weight:bold; transition:transform .2s; flex:none; }
+  .comp.open .chev { transform:rotate(90deg); }
+  .comp .body { display:none; padding:0 16px 15px 38px; color:var(--navy2);
+                font-size:13.5px; line-height:1.6; }
+  .comp.open .body { display:block; }
+  .comp .body p { margin-bottom:8px; }
+  .comp .body p:last-child { margin-bottom:0; }
+
+  .ex { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .ex > div { flex:1; min-width:200px; border-radius:6px; padding:8px 11px; font-size:12.5px; }
+  .ex .good { background:var(--greenlt); border-left:3px solid var(--green); }
+  .ex .bad { background:var(--bglight); border-left:3px solid var(--gray); }
+  .ex .lbl { font-weight:bold; font-size:10.5px; letter-spacing:.04em; display:block; margin-bottom:3px; }
+  .ex .good .lbl { color:var(--green); }
+  .ex .bad .lbl { color:var(--gray); }
+
+  h2.sec { color:var(--navy2); font-size:19px; margin:30px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:12px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; text-align:justify; }
+  ul.body-list { margin:0 0 15px 20px; }
+  ul.body-list li { font-size:14.5px; line-height:1.6; margin-bottom:7px; color:var(--black); }
+
+  .keypoint { background:var(--greenlt); border:1px solid var(--green);
+              border-left:4px solid var(--green); border-radius:4px;
+              padding:14px 18px; margin:8px 0 26px; }
+  .keypoint .kt { color:var(--green); font-weight:bold; font-size:12.5px;
+                  letter-spacing:.04em; margin-bottom:5px; }
+  .keypoint p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .keypoint.gold { background:var(--goldlt); border-color:var(--gold); }
+  .keypoint.gold .kt { color:var(--gold); }
+
+  /* chain diagram (mission lifecycle / critical path) */
+  .chain-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+  .chain-node { position:relative; flex:1 1 110px; min-width:100px; max-width:150px;
+                background:#fff; border:2px solid var(--graylt); border-radius:8px;
+                padding:12px 10px; text-align:center; cursor:pointer; }
+  .chain-node .cn-title { font-weight:bold; color:var(--navy); font-size:12.5px; line-height:1.3; }
+  .chain-node .cn-sub { color:var(--gray); font-size:10.5px; margin-top:3px; }
+  .chain-node.critical { border-color:var(--gold); background:var(--goldlt); }
+  .chain-node.critical .cn-title { color:#92400E; }
+  .chain-node:hover, .chain-node:focus { border-color:var(--green); outline:none; }
+  .chain-node .tip { position:absolute; left:50%; top:110%; transform:translateX(-50%);
+               width:230px; max-width:70vw; background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px; padding:11px 13px;
+               box-shadow:0 8px 22px rgba(11,24,41,.30); opacity:0; visibility:hidden;
+               transition:opacity .15s; pointer-events:none; z-index:30; text-align:left; }
+  .chain-node.critical .tip { border-left-color:var(--gold); }
+  .chain-node:hover .tip, .chain-node:focus .tip { opacity:1; visibility:visible; }
+  .chain-node .tip h4 { color:var(--navy); font-size:12.5px; margin:0 0 4px; }
+  .chain-node .tip p { color:var(--navy2); font-size:11.5px; line-height:1.5; margin:0; font-weight:normal; }
+  .chain-legend { display:flex; gap:18px; justify-content:center; margin-top:34px;
+                  font-size:11px; color:var(--gray); flex-wrap:wrap; }
+  .chain-legend span { display:inline-flex; align-items:center; gap:5px; }
+  .chain-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .chain-legend .lc1 { background:#fff; border:2px solid var(--graylt); }
+  .chain-legend .lc2 { background:var(--goldlt); border:2px solid var(--gold); }
+
+  /* decision scenario */
+  .scenario-text { font-size:14px; line-height:1.65; color:var(--black);
+                    background:#fff; border:1px solid var(--graylt); border-radius:8px;
+                    padding:16px 18px; margin-bottom:14px; }
+  .dopt { display:block; width:100%; text-align:left; background:#fff;
+          border:1.5px solid var(--graylt); border-radius:8px; padding:12px 15px;
+          margin-bottom:9px; font-size:13.5px; color:var(--navy); cursor:pointer;
+          font-family:inherit; }
+  .dopt:hover { border-color:var(--navy3); background:var(--bglight); }
+  .dopt .letter { display:inline-block; width:20px; height:20px; border-radius:50%;
+                   background:var(--bgdiag); color:var(--navy2); font-weight:bold;
+                   font-size:11px; text-align:center; line-height:20px; margin-right:9px; }
+  .dopt.chosen.correct { border-color:var(--green); background:var(--greenlt); }
+  .dopt.chosen.correct .letter { background:var(--green); color:#fff; }
+  .dopt.chosen.wrong { border-color:var(--gray); background:var(--bglight); }
+  .dopt.disabled { cursor:default; }
+  .dfeedback { display:none; border-radius:8px; padding:14px 18px; margin-top:6px;
+               font-size:13.5px; line-height:1.6; }
+  .dfeedback.show { display:block; }
+  .dfeedback.correct { background:var(--greenlt); border-left:4px solid var(--green); color:var(--navy2); }
+  .dfeedback.wrong { background:var(--bglight); border-left:4px solid var(--gray); color:var(--navy2); }
+  .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .dfeedback.correct .dtag { color:var(--green); }
+  .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
+
+  /* quiz */
+  .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
+       margin-bottom:12px; }
+  .q .qn { color:var(--gray); font-weight:bold; font-size:11px; letter-spacing:.05em; }
+  .q .qt { color:var(--navy); font-size:14.5px; line-height:1.5; margin:4px 0 10px; }
+  .q button { all:unset; cursor:pointer; color:var(--green); font-weight:bold;
+              font-size:12.5px; }
+  .q button:hover { text-decoration:underline; }
+  .q .ans { display:none; background:var(--bglight); border-left:3px solid var(--gold);
+            padding:10px 14px; margin-top:10px; color:var(--navy2);
+            font-size:13px; line-height:1.6; }
+  .q.revealed .ans { display:block; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 2: Execution</div></div>
+  </div>
+  <div class="badge">ISTM &middot; FLIGHT VEHICLE</div>
+</div>
+
+<main>
+  <div class="lesnum">Lesson 2.3 ISTM Exercise &mdash; Interactive <span class="slochip">SLO 6</span></div>
+  <h1>Interface Safe-to-Mate (Flight Vehicle)</h1>
+  <div class="rule"></div>
+  <div class="hook">This harness carries solar array power. Get an ISTM check wrong here and the failure mode isn't abstract &mdash; it's the array shorting its own output the moment sunlight hits it.</div>
+
+  <h2 class="sec">What You're Verifying</h2><div class="secline"></div>
+<p class="body">This harness carries the deployed solar array's output (Lesson 1.3's Capstone made EPS integration mandatory for exactly this reason) and its temperature sensor signal from the array to the Power Distribution Unit (PDU). A wiring harness has no internal component to check &mdash; there is no schematic in the CSTM sense. What you verify instead is that the harness matches its intended <b>pin map</b>: the right pin at one end lands on the right pin at the other, and no two different circuits are shorted together anywhere along the run.</p>
+<div class="card"><h2>Fig. 2.3-C &mdash; Schematic (Pin Map) Diagram</h2><div class="hint">Five independent conductors, point to point.</div><div style="background:#fff; border:1px solid var(--graylt); border-radius:8px; padding:16px; overflow-x:auto;">
+<svg viewBox="0 0 640 280" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:640px; display:block; margin:0 auto;">
+  <text x="320" y="16" text-anchor="middle" font-family="Helvetica" font-size="12"
+        font-weight="bold" fill="var(--navy2)">SOLAR ARRAY HARNESS &#8212; ARRAY TO PDU (PIN MAP)</text>
+
+  <text x="70" y="38" text-anchor="middle" font-family="Helvetica" font-size="10.5" font-weight="bold" fill="var(--gray)">P1 (ARRAY)</text>
+  <text x="570" y="38" text-anchor="middle" font-family="Helvetica" font-size="10.5" font-weight="bold" fill="var(--gray)">P2 (PDU)</text>
+
+  <circle cx="70" cy="60" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <line x1="77" y1="60" x2="563" y2="60" stroke="var(--navy)" stroke-width="2.5"/>
+  <circle cx="570" cy="60" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="320" y="52" text-anchor="middle" font-family="Helvetica" font-size="11" font-weight="bold" fill="var(--navy2)">ARRAY+</text>
+
+  <circle cx="70" cy="100" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <line x1="77" y1="100" x2="563" y2="100" stroke="var(--navy)" stroke-width="2.5"/>
+  <circle cx="570" cy="100" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="320" y="92" text-anchor="middle" font-family="Helvetica" font-size="11" font-weight="bold" fill="var(--navy2)">ARRAY&#8722;</text>
+
+  <line x1="150" y1="67" x2="150" y2="93" stroke="#991B1B" stroke-width="2" stroke-dasharray="5,4"/>
+  <text x="450" y="80" text-anchor="middle" font-family="Helvetica" font-size="11" fill="#991B1B" font-weight="bold">ARRAY+ to ARRAY&#8722; must read OPEN &#8212; a short here shorts the array the instant it&#8217;s illuminated</text>
+
+  <circle cx="70" cy="150" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <line x1="77" y1="150" x2="563" y2="150" stroke="var(--navy)" stroke-width="2.5"/>
+  <circle cx="570" cy="150" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="320" y="142" text-anchor="middle" font-family="Helvetica" font-size="11" font-weight="bold" fill="var(--navy2)">TEMP+</text>
+
+  <circle cx="70" cy="190" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <line x1="77" y1="190" x2="563" y2="190" stroke="var(--navy)" stroke-width="2.5"/>
+  <circle cx="570" cy="190" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="320" y="182" text-anchor="middle" font-family="Helvetica" font-size="11" font-weight="bold" fill="var(--navy2)">TEMP&#8722;</text>
+
+  <circle cx="70" cy="230" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <line x1="77" y1="230" x2="563" y2="230" stroke="var(--navy)" stroke-width="2.5"/>
+  <circle cx="570" cy="230" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="320" y="222" text-anchor="middle" font-family="Helvetica" font-size="11" font-weight="bold" fill="var(--navy2)">CASE / SHIELD</text>
+
+  <text x="320" y="255" text-anchor="middle" font-family="Helvetica" font-size="11" fill="var(--gray)">Each wire: &#8776; 0 &#937; P1-to-P2 (continuity). Every OTHER pair: must read OPEN (isolation).</text>
+</svg>
+</div></div>
+<div class="card"><h2>Fig. 2.3-D &mdash; Terminal Diagram</h2><div class="hint">The physical mating face at either end.</div><div style="background:#fff; border:1px solid var(--graylt); border-radius:8px; padding:16px; overflow-x:auto;">
+<svg viewBox="0 0 640 280" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:640px; display:block; margin:0 auto;">
+  <text x="320" y="16" text-anchor="middle" font-family="Helvetica" font-size="12"
+        font-weight="bold" fill="var(--navy2)">SOLAR ARRAY CONNECTOR &#8212; MATING FACE (EITHER END)</text>
+
+  <circle cx="230" cy="150" r="90" fill="var(--bgdiag)" stroke="var(--navy)" stroke-width="2.5"/>
+  <path d="M230,60 L244,38 L216,38 Z" fill="var(--gold)"/>
+  <text x="230" y="52" text-anchor="middle" font-family="Helvetica" font-size="9" font-weight="bold" fill="#fff">KEY</text>
+
+  <circle cx="230" cy="90" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="230" y="95" text-anchor="middle" font-family="Helvetica" font-size="11" font-weight="bold" fill="var(--navy)">A+</text>
+  <circle cx="296" cy="128" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="296" y="133" text-anchor="middle" font-family="Helvetica" font-size="11" font-weight="bold" fill="var(--navy)">A&#8722;</text>
+  <circle cx="272" cy="202" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="272" y="207" text-anchor="middle" font-family="Helvetica" font-size="10" font-weight="bold" fill="var(--navy)">T+</text>
+  <circle cx="188" cy="202" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="188" y="207" text-anchor="middle" font-family="Helvetica" font-size="10" font-weight="bold" fill="var(--navy)">T&#8722;</text>
+  <circle cx="164" cy="128" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="164" y="133" text-anchor="middle" font-family="Helvetica" font-size="9" font-weight="bold" fill="var(--navy)">CASE</text>
+
+  <line x1="380" y1="90" x2="440" y2="90" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="94" font-family="Helvetica" font-size="12" fill="var(--navy2)">A+ / A&#8722; &#8212; array output</text>
+  <line x1="380" y1="130" x2="440" y2="130" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="134" font-family="Helvetica" font-size="12" fill="var(--navy2)">T+ / T&#8722; &#8212; temperature sensor</text>
+  <line x1="380" y1="170" x2="440" y2="170" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="174" font-family="Helvetica" font-size="12" fill="var(--navy2)">CASE &#8212; chassis / shield</text>
+</svg>
+</div></div>
+<h2 class="sec">Why ARRAY+ to ARRAY&minus; Is the Check That Matters Most</h2><div class="secline"></div>
+<p class="body">Every pin pair in this harness should be isolated from every other pin pair &mdash; that is the general ISTM rule. But one specific pair carries the highest consequence: ARRAY+ to ARRAY&minus;. A solar array under illumination is a live power source the moment sunlight reaches it, whether or not anything downstream is powered on. A short between these two pins, undetected before deployment, becomes a short across the array itself on orbit &mdash; with no technician able to walk out and unplug anything.</p>
+<div class="card"><h2>Exercise &mdash; Predict the ISTM Results</h2>
+    <div class="hint">Draft your answer, then reveal a model answer to self-check.</div>
+    <div class="scenario-text">Using Fig. 2.3-C, state the expected result for (1) continuity on each individual wire end-to-end, and (2) isolation between ARRAY+ and ARRAY&minus; specifically.</div>
+    <label class="exercise-label" for="istm23-continuity">Continuity Result</label><textarea class="exercise-field" id="istm23-continuity" rows="2" placeholder="Each wire, P1 to P2..."></textarea><label class="exercise-label" for="istm23-isolation">ARRAY+ / ARRAY&minus; Isolation Result</label><textarea class="exercise-field" id="istm23-isolation" rows="2" placeholder="What must this specific pair read, and why does it matter more than the others?"></textarea>
+    <button class="dopt" id="istm23-reveal-btn" style="margin-top:12px; text-align:center;">Compare to a model answer &rsaquo;</button>
+    <div class="dfeedback" id="istm23-modelbox">
+      <span class="dtag">MODEL ANSWER</span>
+      <p><b>Continuity:</b> Each of the five wires (ARRAY+, ARRAY&minus;, TEMP+, TEMP&minus;, CASE) should read very low resistance from its P1 pin to its matching P2 pin, confirming the harness is wired straight through with no swapped or broken conductors.</p><p><b>ARRAY+ / ARRAY&minus; isolation:</b> Must read OPEN. Unlike a broken wire, which just disables that one circuit, a short between these two pins creates a direct path across the solar array's own output &mdash; a defect that only becomes visible once the array is illuminated on orbit, when it is far too late to fix.</p>
+      <ul class="exercise-checklist"><li>Did you check continuity on all five wires, not just the array pair?</li><li>Did you explain the consequence, not just state "open"?</li></ul>
+    </div>
+    </div>
+<div class="card"><h2>Scenario &mdash; A Low Reading Between Array Pins</h2><div class="hint">You are running the isolation check across every pin pair per the ISTM procedure.</div><div class="scenario-text">ARRAY+ to ARRAY&minus; reads <b>15 &#937;</b> &mdash; not zero, but far from the open circuit this pair requires. Every other pin pair reads open as expected. <b>What is your assessment?</b></div><div id="eps-decision-card"></div></div>
+<div class="keypoint"><div class="kt">KEY POINT</div><p>This is the same reasoning that made EPS a mandatory subsystem in the Part 1 Capstone: a defect that only shows up after deployment, on a subsystem you can't isolate or power off, has to be caught here &mdash; on the ground, before mating &mdash; or not at all.</p></div>
+
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+
+<script>
+const ACCORDIONS = [];
+ACCORDIONS.forEach(acc => {
+  const mount = document.getElementById(acc.mount);
+  if (!mount) return;
+  acc.items.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'comp';
+    let exHtml = '';
+    if (c.good || c.bad) {
+      exHtml = '<div class="ex">' +
+        (c.good ? '<div class="good"><span class="lbl">GOOD</span>' + c.good + '</div>' : '') +
+        (c.bad ? '<div class="bad"><span class="lbl">VAGUE</span>' + c.bad + '</div>' : '') +
+        '</div>';
+    }
+    d.innerHTML = '<button><span class="dot"></span><span class="name">' + c.name +
+      '</span><span class="sub">' + (c.sub || '') + '</span><span class="chev">&#8250;</span></button>' +
+      '<div class="body"><p>' + c.body + '</p>' + exHtml + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('open'));
+    mount.appendChild(d);
+  });
+});
+
+const QUIZ = [];
+const quizMount = document.getElementById('quiz');
+if (quizMount) {
+  QUIZ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<div class="qn">QUESTION ' + (i + 1) + '</div>' +
+      '<div class="qt">' + q.q + '</div>' +
+      '<button>Reveal what a strong answer covers &#8250;</button>' +
+      '<div class="ans">' + q.a + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('revealed'));
+    quizMount.appendChild(d);
+  });
+}
+
+const CHAINS = [];
+CHAINS.forEach(chain => {
+  const mount = document.getElementById(chain.mount);
+  if (!mount) return;
+  chain.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'chain-node' + (n.critical ? ' critical' : '');
+    el.setAttribute('tabindex', '0');
+    el.innerHTML = '<div class="cn-title">' + n.title + '</div>' +
+      (n.sub ? '<div class="cn-sub">' + n.sub + '</div>' : '') +
+      '<div class="tip"><h4>' + n.title + '</h4><p>' + n.detail + '</p></div>';
+    mount.appendChild(el);
+  });
+});
+
+const DECISIONS = [{"mount": "eps-decision-card", "options": [{"text": "15 &#937; is a fairly high resistance value, so it is unlikely to draw meaningful current &mdash; proceed with mating.", "correct": false, "feedback": "\"Fairly high\" is not the pass/fail criterion. This pair is specified to read open. A 15 &#937; path is a real, unexplained short relative to that spec, on the one pin pair where a short has the most severe possible consequence."}, {"text": "This is a hard fail. Isolation between ARRAY+ and ARRAY&minus; must be open; 15 &#937; indicates a short somewhere in the harness. Hold, document, and do not mate until the harness is repaired or replaced and re-verified.", "correct": true, "feedback": "Correct. There is no acceptable \"partial\" result on this specific check. A short here, discovered only after the array deploys and is illuminated, cannot be fixed on orbit &mdash; this is exactly the failure mode ISTM exists to catch on the ground."}, {"text": "Since every other pin pair reads correctly, this is likely a one-off measurement error &mdash; retest once more and accept whichever result looks more typical.", "correct": false, "feedback": "Retesting once for confirmation is reasonable practice in general, but \"accept whichever result looks more typical\" is choosing data to match an expectation, not a valid measurement process. A confirmed 15 &#937; reading is a fail, full stop."}, {"text": "Reduce the test voltage on the meter and see if the reading changes.", "correct": false, "feedback": "Changing test conditions to search for a friendlier number, rather than accepting the measurement as reported, is the same rationalization pattern flagged throughout this module's CSTM/ISTM exercises."}]}];
+DECISIONS.forEach(dec => {
+  const mount = document.getElementById(dec.mount);
+  if (!mount) return;
+  const feedback = document.createElement('div');
+  feedback.className = 'dfeedback';
+  mount.appendChild(feedback);
+  let answered = false;
+  dec.options.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    const btn = document.createElement('button');
+    btn.className = 'dopt';
+    btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
+      feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
+        '</span>' + opt.feedback;
+    });
+    mount.insertBefore(btn, feedback);
+  });
+});
+
+
+document.getElementById('istm23-reveal-btn').addEventListener('click', () => {
+  const box = document.getElementById('istm23-modelbox');
+  box.classList.add('show', 'correct');
+});
+</script>
+</body>
+</html>

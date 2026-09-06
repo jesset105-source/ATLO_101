@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Lesson 2.3: Mechanical Integration</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badge { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:860px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; display:flex;
+            align-items:center; gap:10px; flex-wrap:wrap; }
+  .slochip { background:var(--bgdiag); border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:11px; letter-spacing:.03em;
+             padding:3px 9px; border-radius:20px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.15; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:26px; }
+
+  .card { background:var(--bgdiag); border:1px solid var(--graylt);
+          border-radius:10px; padding:18px; margin-bottom:26px; }
+  .card > h2 { text-align:center; color:var(--navy); font-size:13px;
+               letter-spacing:.05em; text-transform:uppercase;
+               border-bottom:1px solid var(--graylt); padding-bottom:10px; margin-bottom:6px; }
+  .hint { text-align:center; color:var(--gray); font-size:11.5px; margin-bottom:12px; }
+
+  /* accordion (roles, phases, procedure anatomy, test-plan elements, deliverables) */
+  .comp { background:#fff; border:1px solid var(--graylt); border-radius:8px;
+          margin-bottom:10px; overflow:hidden; }
+  .comp button { all:unset; display:flex; width:100%; align-items:center;
+                 gap:12px; padding:13px 16px; cursor:pointer; }
+  .comp button:hover { background:var(--bglight); }
+  .comp .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex:none; }
+  .comp .name { font-weight:bold; color:var(--navy); font-size:14.5px; }
+  .comp .sub { color:var(--gray); font-size:12px; margin-left:auto; padding-right:8px; }
+  .comp .chev { color:var(--green); font-weight:bold; transition:transform .2s; flex:none; }
+  .comp.open .chev { transform:rotate(90deg); }
+  .comp .body { display:none; padding:0 16px 15px 38px; color:var(--navy2);
+                font-size:13.5px; line-height:1.6; }
+  .comp.open .body { display:block; }
+  .comp .body p { margin-bottom:8px; }
+  .comp .body p:last-child { margin-bottom:0; }
+
+  .ex { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .ex > div { flex:1; min-width:200px; border-radius:6px; padding:8px 11px; font-size:12.5px; }
+  .ex .good { background:var(--greenlt); border-left:3px solid var(--green); }
+  .ex .bad { background:var(--bglight); border-left:3px solid var(--gray); }
+  .ex .lbl { font-weight:bold; font-size:10.5px; letter-spacing:.04em; display:block; margin-bottom:3px; }
+  .ex .good .lbl { color:var(--green); }
+  .ex .bad .lbl { color:var(--gray); }
+
+  h2.sec { color:var(--navy2); font-size:19px; margin:30px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:12px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; text-align:justify; }
+  ul.body-list { margin:0 0 15px 20px; }
+  ul.body-list li { font-size:14.5px; line-height:1.6; margin-bottom:7px; color:var(--black); }
+
+  .keypoint { background:var(--greenlt); border:1px solid var(--green);
+              border-left:4px solid var(--green); border-radius:4px;
+              padding:14px 18px; margin:8px 0 26px; }
+  .keypoint .kt { color:var(--green); font-weight:bold; font-size:12.5px;
+                  letter-spacing:.04em; margin-bottom:5px; }
+  .keypoint p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .keypoint.gold { background:var(--goldlt); border-color:var(--gold); }
+  .keypoint.gold .kt { color:var(--gold); }
+
+  /* chain diagram (mission lifecycle / critical path) */
+  .chain-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+  .chain-node { position:relative; flex:1 1 110px; min-width:100px; max-width:150px;
+                background:#fff; border:2px solid var(--graylt); border-radius:8px;
+                padding:12px 10px; text-align:center; cursor:pointer; }
+  .chain-node .cn-title { font-weight:bold; color:var(--navy); font-size:12.5px; line-height:1.3; }
+  .chain-node .cn-sub { color:var(--gray); font-size:10.5px; margin-top:3px; }
+  .chain-node.critical { border-color:var(--gold); background:var(--goldlt); }
+  .chain-node.critical .cn-title { color:#92400E; }
+  .chain-node:hover, .chain-node:focus { border-color:var(--green); outline:none; }
+  .chain-node .tip { position:absolute; left:50%; top:110%; transform:translateX(-50%);
+               width:230px; max-width:70vw; background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px; padding:11px 13px;
+               box-shadow:0 8px 22px rgba(11,24,41,.30); opacity:0; visibility:hidden;
+               transition:opacity .15s; pointer-events:none; z-index:30; text-align:left; }
+  .chain-node.critical .tip { border-left-color:var(--gold); }
+  .chain-node:hover .tip, .chain-node:focus .tip { opacity:1; visibility:visible; }
+  .chain-node .tip h4 { color:var(--navy); font-size:12.5px; margin:0 0 4px; }
+  .chain-node .tip p { color:var(--navy2); font-size:11.5px; line-height:1.5; margin:0; font-weight:normal; }
+  .chain-legend { display:flex; gap:18px; justify-content:center; margin-top:34px;
+                  font-size:11px; color:var(--gray); flex-wrap:wrap; }
+  .chain-legend span { display:inline-flex; align-items:center; gap:5px; }
+  .chain-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .chain-legend .lc1 { background:#fff; border:2px solid var(--graylt); }
+  .chain-legend .lc2 { background:var(--goldlt); border:2px solid var(--gold); }
+
+  /* decision scenario */
+  .scenario-text { font-size:14px; line-height:1.65; color:var(--black);
+                    background:#fff; border:1px solid var(--graylt); border-radius:8px;
+                    padding:16px 18px; margin-bottom:14px; }
+  .dopt { display:block; width:100%; text-align:left; background:#fff;
+          border:1.5px solid var(--graylt); border-radius:8px; padding:12px 15px;
+          margin-bottom:9px; font-size:13.5px; color:var(--navy); cursor:pointer;
+          font-family:inherit; }
+  .dopt:hover { border-color:var(--navy3); background:var(--bglight); }
+  .dopt .letter { display:inline-block; width:20px; height:20px; border-radius:50%;
+                   background:var(--bgdiag); color:var(--navy2); font-weight:bold;
+                   font-size:11px; text-align:center; line-height:20px; margin-right:9px; }
+  .dopt.chosen.correct { border-color:var(--green); background:var(--greenlt); }
+  .dopt.chosen.correct .letter { background:var(--green); color:#fff; }
+  .dopt.chosen.wrong { border-color:var(--gray); background:var(--bglight); }
+  .dopt.disabled { cursor:default; }
+  .dfeedback { display:none; border-radius:8px; padding:14px 18px; margin-top:6px;
+               font-size:13.5px; line-height:1.6; }
+  .dfeedback.show { display:block; }
+  .dfeedback.correct { background:var(--greenlt); border-left:4px solid var(--green); color:var(--navy2); }
+  .dfeedback.wrong { background:var(--bglight); border-left:4px solid var(--gray); color:var(--navy2); }
+  .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .dfeedback.correct .dtag { color:var(--green); }
+  .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
+
+  /* quiz */
+  .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
+       margin-bottom:12px; }
+  .q .qn { color:var(--gray); font-weight:bold; font-size:11px; letter-spacing:.05em; }
+  .q .qt { color:var(--navy); font-size:14.5px; line-height:1.5; margin:4px 0 10px; }
+  .q button { all:unset; cursor:pointer; color:var(--green); font-weight:bold;
+              font-size:12.5px; }
+  .q button:hover { text-decoration:underline; }
+  .q .ans { display:none; background:var(--bglight); border-left:3px solid var(--gold);
+            padding:10px 14px; margin-top:10px; color:var(--navy2);
+            font-size:13px; line-height:1.6; }
+  .q.revealed .ans { display:block; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 2: Execution</div></div>
+  </div>
+  <div class="badge">LESSON 2.3</div>
+</div>
+
+<main>
+  <div class="lesnum">Lesson 2.3 &mdash; Interactive <span class="slochip">SLO 7</span></div>
+  <h1>Mechanical Integration</h1>
+  <div class="rule"></div>
+  <div class="hook">Electrically verified components now have to become one physical vehicle &mdash; bolted, aligned, and torqued together in a cleanroom, by hand, under your direction.</div>
+
+  <h2 class="sec">What Mechanical Integration Involves</h2><div class="secline"></div>
+<p class="body">Once a component has passed its CSTM check, it moves from "verified electrically healthy" to "physically installed." That work is done by trained Integration Technicians (Lesson 1.2) under the direction of the ATLO engineer, inside a controlled cleanroom environment. It includes precision alignment, torquing fasteners to exact specified values in a specified sequence, and applying witness marks that prove the work was done correctly &mdash; all before the component is ever electrically powered.</p>
+<h2 class="sec">Torque Control</h2><div class="secline"></div>
+<p class="body">Every fastener on a spacecraft has a specified torque value and, for multi-bolt patterns, a specified tightening <b>sequence</b> &mdash; typically a star or cross pattern that pulls a component down evenly rather than tilting it against an increasingly tight single corner. Under-torque risks a fastener backing out under launch vibration; over-torque risks damaging threads or warping a thin structural panel. Torque wrenches used for this work are themselves calibrated on a tracked schedule &mdash; the same "the tool has to be trustworthy before the measurement is" principle you saw with ohmmeters in Lesson 2.1.</p>
+<p class="body">After final torque, a <b>witness mark</b> (a small painted line, or "torque seal," across the fastener head and onto the adjacent structure) is applied. It doesn't add strength &mdash; it lets any later inspector see at a glance, without re-torquing anything, whether a fastener has moved since it was last verified.</p>
+<h2 class="sec">FOD Control</h2><div class="secline"></div>
+<p class="body">Foreign Object Debris (FOD) &mdash; a dropped washer, a stray wire clipping, a tool left inside a structure &mdash; is treated as seriously as any electrical anomaly. A loose fastener inside a closed structure can float freely once the vehicle reaches microgravity and short a circuit or jam a mechanism years after everyone has forgotten it was ever dropped. Real cleanroom discipline includes tool accountability (every tool has a home, and every tool is accounted for at the end of a task, not just when convenient), lint-free garments, and a hard rule: nothing gets closed out until every tool and every fastener is accounted for.</p>
+<div class="card"><h2>Mechanical Integration Checklist</h2><div class="hint">Click each item to see why it exists.</div><div id="mech-checklist-card"></div></div>
+<div class="card"><h2>Scenario &mdash; A Fastener That Won't Start Easily</h2><div class="hint">Read the situation, then choose what you do.</div><div class="scenario-text">A technician is torquing a bracket into place following the specified star pattern. On the third fastener, it takes noticeably more force than the first two just to get it started by hand, before any torque wrench is even applied. <b>What should happen next?</b></div><div id="fastener-decision-card"></div></div>
+<div class="keypoint"><div class="kt">KEY POINT</div><p>Nothing about mechanical integration is "just tightening bolts." Torque sequence, torque value, witness marks, and FOD accountability all exist because a mechanical defect introduced here can stay hidden until launch loads or on-orbit conditions find it &mdash; long after anyone could still fix it by hand.</p></div>
+<h2 class="sec">Lesson Quiz Preview</h2><div class="secline"></div><div class="hint" style="text-align:left; margin-bottom:14px;">Think through your answer first, then reveal what a strong answer covers.</div><div id="quiz"></div>
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+
+<script>
+const ACCORDIONS = [{"mount": "mech-checklist-card", "items": [{"name": "Cleanroom Gowning Verified", "sub": "Before entry", "body": "Proper cleanroom garments are worn correctly before anyone approaches flight hardware &mdash; contamination control protects sensitive optics, sensors, and thermal surfaces just as much as FOD control protects against loose hardware."}, {"name": "CSTM / ISTM Complete", "sub": "Before this component is mated", "body": "The component and the interface it is mating to have already passed their Safe-to-Mate checks (Lesson 2.2) &mdash; mechanical integration never starts on a connector that hasn't been cleared."}, {"name": "Torque Wrench Calibration Current", "sub": "Checked before use", "body": "Every torque wrench has a calibration due date. Using one past its due date, even if it \"feels right,\" is a procedural violation &mdash; the reading can no longer be trusted."}, {"name": "Tool & Hardware Accountability", "sub": "FOD control", "body": "Every tool and every loose fastener is counted out and counted back in. A task is not complete until the count matches &mdash; a missing item halts closeout until it is found."}, {"name": "Witness Marks Applied", "sub": "After final torque", "body": "Once a fastener is torqued to its final, verified value, a witness mark is applied across it and the adjacent structure, and the as-built configuration is recorded."}]}];
+ACCORDIONS.forEach(acc => {
+  const mount = document.getElementById(acc.mount);
+  if (!mount) return;
+  acc.items.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'comp';
+    let exHtml = '';
+    if (c.good || c.bad) {
+      exHtml = '<div class="ex">' +
+        (c.good ? '<div class="good"><span class="lbl">GOOD</span>' + c.good + '</div>' : '') +
+        (c.bad ? '<div class="bad"><span class="lbl">VAGUE</span>' + c.bad + '</div>' : '') +
+        '</div>';
+    }
+    d.innerHTML = '<button><span class="dot"></span><span class="name">' + c.name +
+      '</span><span class="sub">' + (c.sub || '') + '</span><span class="chev">&#8250;</span></button>' +
+      '<div class="body"><p>' + c.body + '</p>' + exHtml + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('open'));
+    mount.appendChild(d);
+  });
+});
+
+const QUIZ = [{"q": "Why are multi-bolt patterns torqued in a specified sequence (like a star pattern) rather than one bolt fully at a time?", "a": "A sequential, even pattern pulls the component down uniformly. Fully torquing one bolt before starting the next can tilt or warp the component against an increasingly tight single point."}, {"q": "What does a torque witness mark (torque seal) actually verify, and what does it not do?", "a": "It lets a later inspector see at a glance whether a fastener has moved since it was last verified &mdash; it does not add mechanical strength and is not a substitute for correct torque in the first place."}, {"q": "Why is FOD (Foreign Object Debris) control treated as seriously as an electrical safety rule?", "a": "A dropped fastener or tool left inside a closed structure can float freely once the vehicle reaches microgravity, potentially shorting a circuit or jamming a mechanism long after integration is complete and no one can retrieve it."}, {"q": "Why are torque wrenches calibrated on a tracked schedule?", "a": "The same principle as an ohmmeter in Lesson 2.1: the tool has to be trustworthy before its reading means anything. An out-of-calibration torque wrench can apply the wrong actual torque while displaying the correct number."}, {"q": "ATLO Scenario: During torquing, a fastener requires noticeably more hand-force to start than identical fasteners nearby. What should the technician and ATLO engineer do?", "a": "Stop before forcing it. Unexpected resistance can mean cross-threading or hole misalignment &mdash; forcing it through risks damaging flight hardware. Call a hold, investigate the cause, and do not proceed on assumption."}];
+const quizMount = document.getElementById('quiz');
+if (quizMount) {
+  QUIZ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<div class="qn">QUESTION ' + (i + 1) + '</div>' +
+      '<div class="qt">' + q.q + '</div>' +
+      '<button>Reveal what a strong answer covers &#8250;</button>' +
+      '<div class="ans">' + q.a + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('revealed'));
+    quizMount.appendChild(d);
+  });
+}
+
+const CHAINS = [];
+CHAINS.forEach(chain => {
+  const mount = document.getElementById(chain.mount);
+  if (!mount) return;
+  chain.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'chain-node' + (n.critical ? ' critical' : '');
+    el.setAttribute('tabindex', '0');
+    el.innerHTML = '<div class="cn-title">' + n.title + '</div>' +
+      (n.sub ? '<div class="cn-sub">' + n.sub + '</div>' : '') +
+      '<div class="tip"><h4>' + n.title + '</h4><p>' + n.detail + '</p></div>';
+    mount.appendChild(el);
+  });
+});
+
+const DECISIONS = [{"mount": "fastener-decision-card", "options": [{"text": "Apply a bit more force to get it started, since the fastener and hole were both inspected before the task began.", "correct": false, "feedback": "Forcing a fastener that resists more than its neighbors is exactly how threads get damaged or a misaligned hole gets forced into a stressed, out-of-tolerance condition. A prior inspection does not rule out a problem discovered only once the fastener is actually being installed."}, {"text": "Stop before forcing it. Call a hold, and have the ATLO engineer investigate whether the hole is misaligned or the fastener is cross-threading before continuing.", "correct": true, "feedback": "Correct. Unexpected resistance during installation is exactly the kind of anomaly that gets caught by stopping immediately, the same \"call a hold\" discipline from Lesson 1.2 and 2.1, now applied to mechanical work."}, {"text": "Skip this fastener for now, finish the rest of the pattern, and come back to it at the end.", "correct": false, "feedback": "Skipping a fastener in a specified torque sequence changes the loading pattern on the other fasteners as they're torqued around a missing point &mdash; and it still leaves the original resistance unexplained. Investigate first."}, {"text": "Switch to a different fastener from stock and try that one instead, without investigating the hole.", "correct": false, "feedback": "A different fastener starting more easily doesn't tell you whether the hole itself is misaligned or damaged &mdash; it just avoids the question. The cause has to be understood, not swapped away."}]}];
+DECISIONS.forEach(dec => {
+  const mount = document.getElementById(dec.mount);
+  if (!mount) return;
+  const feedback = document.createElement('div');
+  feedback.className = 'dfeedback';
+  mount.appendChild(feedback);
+  let answered = false;
+  dec.options.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    const btn = document.createElement('button');
+    btn.className = 'dopt';
+    btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
+      feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
+        '</span>' + opt.feedback;
+    });
+    mount.insertBefore(btn, feedback);
+  });
+});
+
+
+</script>
+</body>
+</html>

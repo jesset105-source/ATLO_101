@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Lesson 2.8: Pre-Shipment Review (PSR)</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badge { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:860px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; display:flex;
+            align-items:center; gap:10px; flex-wrap:wrap; }
+  .slochip { background:var(--bgdiag); border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:11px; letter-spacing:.03em;
+             padding:3px 9px; border-radius:20px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.15; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:26px; }
+
+  .card { background:var(--bgdiag); border:1px solid var(--graylt);
+          border-radius:10px; padding:18px; margin-bottom:26px; }
+  .card > h2 { text-align:center; color:var(--navy); font-size:13px;
+               letter-spacing:.05em; text-transform:uppercase;
+               border-bottom:1px solid var(--graylt); padding-bottom:10px; margin-bottom:6px; }
+  .hint { text-align:center; color:var(--gray); font-size:11.5px; margin-bottom:12px; }
+
+  /* accordion (roles, phases, procedure anatomy, test-plan elements, deliverables) */
+  .comp { background:#fff; border:1px solid var(--graylt); border-radius:8px;
+          margin-bottom:10px; overflow:hidden; }
+  .comp button { all:unset; display:flex; width:100%; align-items:center;
+                 gap:12px; padding:13px 16px; cursor:pointer; }
+  .comp button:hover { background:var(--bglight); }
+  .comp .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex:none; }
+  .comp .name { font-weight:bold; color:var(--navy); font-size:14.5px; }
+  .comp .sub { color:var(--gray); font-size:12px; margin-left:auto; padding-right:8px; }
+  .comp .chev { color:var(--green); font-weight:bold; transition:transform .2s; flex:none; }
+  .comp.open .chev { transform:rotate(90deg); }
+  .comp .body { display:none; padding:0 16px 15px 38px; color:var(--navy2);
+                font-size:13.5px; line-height:1.6; }
+  .comp.open .body { display:block; }
+  .comp .body p { margin-bottom:8px; }
+  .comp .body p:last-child { margin-bottom:0; }
+
+  .ex { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .ex > div { flex:1; min-width:200px; border-radius:6px; padding:8px 11px; font-size:12.5px; }
+  .ex .good { background:var(--greenlt); border-left:3px solid var(--green); }
+  .ex .bad { background:var(--bglight); border-left:3px solid var(--gray); }
+  .ex .lbl { font-weight:bold; font-size:10.5px; letter-spacing:.04em; display:block; margin-bottom:3px; }
+  .ex .good .lbl { color:var(--green); }
+  .ex .bad .lbl { color:var(--gray); }
+
+  h2.sec { color:var(--navy2); font-size:19px; margin:30px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:12px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; text-align:justify; }
+  ul.body-list { margin:0 0 15px 20px; }
+  ul.body-list li { font-size:14.5px; line-height:1.6; margin-bottom:7px; color:var(--black); }
+
+  .keypoint { background:var(--greenlt); border:1px solid var(--green);
+              border-left:4px solid var(--green); border-radius:4px;
+              padding:14px 18px; margin:8px 0 26px; }
+  .keypoint .kt { color:var(--green); font-weight:bold; font-size:12.5px;
+                  letter-spacing:.04em; margin-bottom:5px; }
+  .keypoint p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .keypoint.gold { background:var(--goldlt); border-color:var(--gold); }
+  .keypoint.gold .kt { color:var(--gold); }
+
+  /* chain diagram (mission lifecycle / critical path) */
+  .chain-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+  .chain-node { position:relative; flex:1 1 110px; min-width:100px; max-width:150px;
+                background:#fff; border:2px solid var(--graylt); border-radius:8px;
+                padding:12px 10px; text-align:center; cursor:pointer; }
+  .chain-node .cn-title { font-weight:bold; color:var(--navy); font-size:12.5px; line-height:1.3; }
+  .chain-node .cn-sub { color:var(--gray); font-size:10.5px; margin-top:3px; }
+  .chain-node.critical { border-color:var(--gold); background:var(--goldlt); }
+  .chain-node.critical .cn-title { color:#92400E; }
+  .chain-node:hover, .chain-node:focus { border-color:var(--green); outline:none; }
+  .chain-node .tip { position:absolute; left:50%; top:110%; transform:translateX(-50%);
+               width:230px; max-width:70vw; background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px; padding:11px 13px;
+               box-shadow:0 8px 22px rgba(11,24,41,.30); opacity:0; visibility:hidden;
+               transition:opacity .15s; pointer-events:none; z-index:30; text-align:left; }
+  .chain-node.critical .tip { border-left-color:var(--gold); }
+  .chain-node:hover .tip, .chain-node:focus .tip { opacity:1; visibility:visible; }
+  .chain-node .tip h4 { color:var(--navy); font-size:12.5px; margin:0 0 4px; }
+  .chain-node .tip p { color:var(--navy2); font-size:11.5px; line-height:1.5; margin:0; font-weight:normal; }
+  .chain-legend { display:flex; gap:18px; justify-content:center; margin-top:34px;
+                  font-size:11px; color:var(--gray); flex-wrap:wrap; }
+  .chain-legend span { display:inline-flex; align-items:center; gap:5px; }
+  .chain-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .chain-legend .lc1 { background:#fff; border:2px solid var(--graylt); }
+  .chain-legend .lc2 { background:var(--goldlt); border:2px solid var(--gold); }
+
+  /* decision scenario */
+  .scenario-text { font-size:14px; line-height:1.65; color:var(--black);
+                    background:#fff; border:1px solid var(--graylt); border-radius:8px;
+                    padding:16px 18px; margin-bottom:14px; }
+  .dopt { display:block; width:100%; text-align:left; background:#fff;
+          border:1.5px solid var(--graylt); border-radius:8px; padding:12px 15px;
+          margin-bottom:9px; font-size:13.5px; color:var(--navy); cursor:pointer;
+          font-family:inherit; }
+  .dopt:hover { border-color:var(--navy3); background:var(--bglight); }
+  .dopt .letter { display:inline-block; width:20px; height:20px; border-radius:50%;
+                   background:var(--bgdiag); color:var(--navy2); font-weight:bold;
+                   font-size:11px; text-align:center; line-height:20px; margin-right:9px; }
+  .dopt.chosen.correct { border-color:var(--green); background:var(--greenlt); }
+  .dopt.chosen.correct .letter { background:var(--green); color:#fff; }
+  .dopt.chosen.wrong { border-color:var(--gray); background:var(--bglight); }
+  .dopt.disabled { cursor:default; }
+  .dfeedback { display:none; border-radius:8px; padding:14px 18px; margin-top:6px;
+               font-size:13.5px; line-height:1.6; }
+  .dfeedback.show { display:block; }
+  .dfeedback.correct { background:var(--greenlt); border-left:4px solid var(--green); color:var(--navy2); }
+  .dfeedback.wrong { background:var(--bglight); border-left:4px solid var(--gray); color:var(--navy2); }
+  .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .dfeedback.correct .dtag { color:var(--green); }
+  .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
+
+  /* quiz */
+  .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
+       margin-bottom:12px; }
+  .q .qn { color:var(--gray); font-weight:bold; font-size:11px; letter-spacing:.05em; }
+  .q .qt { color:var(--navy); font-size:14.5px; line-height:1.5; margin:4px 0 10px; }
+  .q button { all:unset; cursor:pointer; color:var(--green); font-weight:bold;
+              font-size:12.5px; }
+  .q button:hover { text-decoration:underline; }
+  .q .ans { display:none; background:var(--bglight); border-left:3px solid var(--gold);
+            padding:10px 14px; margin-top:10px; color:var(--navy2);
+            font-size:13px; line-height:1.6; }
+  .q.revealed .ans { display:block; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 2: Execution</div></div>
+  </div>
+  <div class="badge">LESSON 2.8</div>
+</div>
+
+<main>
+  <div class="lesnum">Lesson 2.8 &mdash; Interactive <span class="slochip">SLO 11</span></div>
+  <h1>Pre-Shipment Review (PSR)</h1>
+  <div class="rule"></div>
+  <div class="hook">Every lesson in this module has been building toward this gate. PSR is where the program formally decides the vehicle is done &mdash; ready to leave ATLO for good.</div>
+
+  <h2 class="sec">What PSR Is</h2><div class="secline"></div>
+<p class="body">Pre-Shipment Review is the formal milestone review, governed under the same NPR 7120.5 framework introduced in Lesson 1.1, where the program certifies the vehicle ready to ship. It is not a re-test &mdash; it is a structured review of everything already done: every test complete and its data reviewed, every DR dispositioned or explicitly waived with rationale, the as-built configuration matching its official record, and shipping and handling arrangements ready.</p>
+<div class="card"><h2>PSR Closure Criteria</h2><div class="hint">Click each item to see what board members actually check.</div><div id="psr-criteria-card"></div></div>
+<div class="card"><h2>Scenario &mdash; One Open Item at PSR</h2><div class="hint">Read the board's finding, then make the call.</div><div class="scenario-text">Every closure criterion is complete except one: a single DR remains open, but it has already been formally reviewed and waived, with documented rationale signed by the Systems Engineer and QA, explaining why it does not affect flight readiness. <b>Is this a GO or a NO-GO for PSR?</b></div><div id="psr-decision-card"></div></div>
+<div class="keypoint gold"><div class="kt">GO/NO-GO</div><p>PSR does not require zero open items. It requires zero <i>ungoverned</i> ones. An open DR with a documented, approved waiver is a closed loop; an open DR with no disposition at all is not &mdash; that distinction is what a PSR board is actually there to check.</p></div>
+<h2 class="sec">What Happens After PSR</h2><div class="secline"></div>
+<p class="body">A GO at PSR clears the vehicle for shipment &mdash; to a launch site, to a integration facility, wherever the campaign requires next. From here, the vehicle leaves the ATLO team's direct daily hands-on work. That is exactly why every closure criterion in this lesson exists: once this review passes, there is no more convenient opportunity to catch something before the vehicle moves on toward launch.</p>
+<h2 class="sec">Lesson Quiz Preview</h2><div class="secline"></div><div class="hint" style="text-align:left; margin-bottom:14px;">Think through your answer first, then reveal what a strong answer covers.</div><div id="quiz"></div>
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+
+<script>
+const ACCORDIONS = [{"mount": "psr-criteria-card", "items": [{"name": "Test Completion & Data Review", "sub": "Everything planned, actually done", "body": "Every functional and environmental test called for in the test plan (Lesson 1.5) has been run, and its data has actually been reviewed and accepted &mdash; not just executed."}, {"name": "DR Disposition Status", "sub": "Nothing ungoverned", "body": "Every Discrepancy Report is either closed or carries a documented, approved waiver explaining why it does not affect flight readiness (Lesson 2.5). None are simply forgotten or left open without action."}, {"name": "As-Built Configuration Accuracy", "sub": "What's really on the vehicle", "body": "The official configuration record matches exactly what is physically on the vehicle, down to part numbers and revision levels &mdash; anyone inheriting this vehicle after PSR relies on this record being correct."}, {"name": "Safety Closure", "sub": "Hazardous operations reviewed", "body": "Any hazardous operations already performed (or planned during shipment and handling) have been reviewed under the program's safety requirements &mdash; the awareness-level introduction to NPR 8715.3 becomes concretely relevant here."}, {"name": "Shipping & Handling Readiness", "sub": "The next step is prepared", "body": "Shipping containers, handling fixtures, and transportation logistics are confirmed ready before the vehicle is packed &mdash; readiness doesn't stop being the ATLO team's job the moment testing ends."}]}];
+ACCORDIONS.forEach(acc => {
+  const mount = document.getElementById(acc.mount);
+  if (!mount) return;
+  acc.items.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'comp';
+    let exHtml = '';
+    if (c.good || c.bad) {
+      exHtml = '<div class="ex">' +
+        (c.good ? '<div class="good"><span class="lbl">GOOD</span>' + c.good + '</div>' : '') +
+        (c.bad ? '<div class="bad"><span class="lbl">VAGUE</span>' + c.bad + '</div>' : '') +
+        '</div>';
+    }
+    d.innerHTML = '<button><span class="dot"></span><span class="name">' + c.name +
+      '</span><span class="sub">' + (c.sub || '') + '</span><span class="chev">&#8250;</span></button>' +
+      '<div class="body"><p>' + c.body + '</p>' + exHtml + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('open'));
+    mount.appendChild(d);
+  });
+});
+
+const QUIZ = [{"q": "What is Pre-Shipment Review (PSR), and what governs it?", "a": "The formal milestone review where the program certifies the vehicle ready to ship, governed under the same NPR 7120.5 framework that governs other major program reviews."}, {"q": "Is PSR itself a re-test of the vehicle?", "a": "No. It is a structured review of everything already completed &mdash; test results, DR dispositions, configuration records, and shipping readiness &mdash; not a new round of testing."}, {"q": "Does every Discrepancy Report have to be fully closed before PSR can result in a GO?", "a": "No. An open DR with a documented, approved waiver explaining why it doesn't affect flight readiness can still support a GO. What PSR actually requires is that every open item be explicitly governed, not that none exist."}, {"q": "List three things a PSR board checks before clearing a vehicle to ship.", "a": "Any three of: all planned tests complete and their data reviewed, every DR dispositioned or formally waived, the as-built configuration matching official records, safety closure for any hazardous operations, and shipping/handling arrangements ready."}, {"q": "ATLO Scenario: Why does this course describe PSR as \"the last convenient opportunity\" to catch a problem?", "a": "Once PSR results in a GO, the vehicle ships and moves on toward launch, leaving the ATLO team's direct hands-on access. Anything missed here becomes far harder, or impossible, to correct afterward &mdash; the same reason ATLO itself was described in Lesson 1.1 as \"the last point where a problem is a fix instead of a mission loss.\""}];
+const quizMount = document.getElementById('quiz');
+if (quizMount) {
+  QUIZ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<div class="qn">QUESTION ' + (i + 1) + '</div>' +
+      '<div class="qt">' + q.q + '</div>' +
+      '<button>Reveal what a strong answer covers &#8250;</button>' +
+      '<div class="ans">' + q.a + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('revealed'));
+    quizMount.appendChild(d);
+  });
+}
+
+const CHAINS = [];
+CHAINS.forEach(chain => {
+  const mount = document.getElementById(chain.mount);
+  if (!mount) return;
+  chain.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'chain-node' + (n.critical ? ' critical' : '');
+    el.setAttribute('tabindex', '0');
+    el.innerHTML = '<div class="cn-title">' + n.title + '</div>' +
+      (n.sub ? '<div class="cn-sub">' + n.sub + '</div>' : '') +
+      '<div class="tip"><h4>' + n.title + '</h4><p>' + n.detail + '</p></div>';
+    mount.appendChild(el);
+  });
+});
+
+const DECISIONS = [{"mount": "psr-decision-card", "options": [{"text": "NO-GO &mdash; PSR requires every DR to be fully closed with no exceptions.", "correct": false, "feedback": "This is stricter than the actual rule. PSR requires every open item to be explicitly governed, not that literally none exist. A properly reviewed and approved waiver is a legitimate closure path, not a gap."}, {"text": "GO &mdash; a documented, approved waiver with clear rationale is exactly the kind of closure PSR looks for. The DR is governed, even though it remains technically open.", "correct": true, "feedback": "Correct. PSR's bar is \"nothing ungoverned,\" not \"zero open items.\" A formally reviewed and signed waiver, with documented rationale from the SE and QA, is a closed loop even though the DR record itself stays open."}, {"text": "GO, since only one item remains open and it is probably minor.", "correct": false, "feedback": "The number of remaining items and a guess at \"probably minor\" aren't the criteria. What matters is whether that specific item was formally reviewed and waived with documented rationale &mdash; which in this scenario it was, but \"probably minor\" alone would not be sufficient."}, {"text": "Postpone the decision until the DR is either closed or a second independent reviewer re-confirms the waiver.", "correct": false, "feedback": "The waiver already carries SE and QA approval &mdash; that is the defined approval chain. Requiring an additional, undefined review step beyond what the process calls for just adds schedule delay without a defined quality benefit."}]}];
+DECISIONS.forEach(dec => {
+  const mount = document.getElementById(dec.mount);
+  if (!mount) return;
+  const feedback = document.createElement('div');
+  feedback.className = 'dfeedback';
+  mount.appendChild(feedback);
+  let answered = false;
+  dec.options.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    const btn = document.createElement('button');
+    btn.className = 'dopt';
+    btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
+      feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
+        '</span>' + opt.feedback;
+    });
+    mount.insertBefore(btn, feedback);
+  });
+});
+
+
+</script>
+</body>
+</html>
