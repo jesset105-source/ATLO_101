@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Lesson 2.2 ISTM Exercise: Interface Safe-to-Mate (Flatsat)</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badge { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:860px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; display:flex;
+            align-items:center; gap:10px; flex-wrap:wrap; }
+  .slochip { background:var(--bgdiag); border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:11px; letter-spacing:.03em;
+             padding:3px 9px; border-radius:20px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.15; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:26px; }
+
+  .card { background:var(--bgdiag); border:1px solid var(--graylt);
+          border-radius:10px; padding:18px; margin-bottom:26px; }
+  .card > h2 { text-align:center; color:var(--navy); font-size:13px;
+               letter-spacing:.05em; text-transform:uppercase;
+               border-bottom:1px solid var(--graylt); padding-bottom:10px; margin-bottom:6px; }
+  .hint { text-align:center; color:var(--gray); font-size:11.5px; margin-bottom:12px; }
+
+  /* accordion (roles, phases, procedure anatomy, test-plan elements, deliverables) */
+  .comp { background:#fff; border:1px solid var(--graylt); border-radius:8px;
+          margin-bottom:10px; overflow:hidden; }
+  .comp button { all:unset; display:flex; width:100%; align-items:center;
+                 gap:12px; padding:13px 16px; cursor:pointer; }
+  .comp button:hover { background:var(--bglight); }
+  .comp .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex:none; }
+  .comp .name { font-weight:bold; color:var(--navy); font-size:14.5px; }
+  .comp .sub { color:var(--gray); font-size:12px; margin-left:auto; padding-right:8px; }
+  .comp .chev { color:var(--green); font-weight:bold; transition:transform .2s; flex:none; }
+  .comp.open .chev { transform:rotate(90deg); }
+  .comp .body { display:none; padding:0 16px 15px 38px; color:var(--navy2);
+                font-size:13.5px; line-height:1.6; }
+  .comp.open .body { display:block; }
+  .comp .body p { margin-bottom:8px; }
+  .comp .body p:last-child { margin-bottom:0; }
+
+  .ex { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .ex > div { flex:1; min-width:200px; border-radius:6px; padding:8px 11px; font-size:12.5px; }
+  .ex .good { background:var(--greenlt); border-left:3px solid var(--green); }
+  .ex .bad { background:var(--bglight); border-left:3px solid var(--gray); }
+  .ex .lbl { font-weight:bold; font-size:10.5px; letter-spacing:.04em; display:block; margin-bottom:3px; }
+  .ex .good .lbl { color:var(--green); }
+  .ex .bad .lbl { color:var(--gray); }
+
+  h2.sec { color:var(--navy2); font-size:19px; margin:30px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:12px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; text-align:justify; }
+  ul.body-list { margin:0 0 15px 20px; }
+  ul.body-list li { font-size:14.5px; line-height:1.6; margin-bottom:7px; color:var(--black); }
+
+  .keypoint { background:var(--greenlt); border:1px solid var(--green);
+              border-left:4px solid var(--green); border-radius:4px;
+              padding:14px 18px; margin:8px 0 26px; }
+  .keypoint .kt { color:var(--green); font-weight:bold; font-size:12.5px;
+                  letter-spacing:.04em; margin-bottom:5px; }
+  .keypoint p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .keypoint.gold { background:var(--goldlt); border-color:var(--gold); }
+  .keypoint.gold .kt { color:var(--gold); }
+
+  /* chain diagram (mission lifecycle / critical path) */
+  .chain-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+  .chain-node { position:relative; flex:1 1 110px; min-width:100px; max-width:150px;
+                background:#fff; border:2px solid var(--graylt); border-radius:8px;
+                padding:12px 10px; text-align:center; cursor:pointer; }
+  .chain-node .cn-title { font-weight:bold; color:var(--navy); font-size:12.5px; line-height:1.3; }
+  .chain-node .cn-sub { color:var(--gray); font-size:10.5px; margin-top:3px; }
+  .chain-node.critical { border-color:var(--gold); background:var(--goldlt); }
+  .chain-node.critical .cn-title { color:#92400E; }
+  .chain-node:hover, .chain-node:focus { border-color:var(--green); outline:none; }
+  .chain-node .tip { position:absolute; left:50%; top:110%; transform:translateX(-50%);
+               width:230px; max-width:70vw; background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px; padding:11px 13px;
+               box-shadow:0 8px 22px rgba(11,24,41,.30); opacity:0; visibility:hidden;
+               transition:opacity .15s; pointer-events:none; z-index:30; text-align:left; }
+  .chain-node.critical .tip { border-left-color:var(--gold); }
+  .chain-node:hover .tip, .chain-node:focus .tip { opacity:1; visibility:visible; }
+  .chain-node .tip h4 { color:var(--navy); font-size:12.5px; margin:0 0 4px; }
+  .chain-node .tip p { color:var(--navy2); font-size:11.5px; line-height:1.5; margin:0; font-weight:normal; }
+  .chain-legend { display:flex; gap:18px; justify-content:center; margin-top:34px;
+                  font-size:11px; color:var(--gray); flex-wrap:wrap; }
+  .chain-legend span { display:inline-flex; align-items:center; gap:5px; }
+  .chain-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .chain-legend .lc1 { background:#fff; border:2px solid var(--graylt); }
+  .chain-legend .lc2 { background:var(--goldlt); border:2px solid var(--gold); }
+
+  /* decision scenario */
+  .scenario-text { font-size:14px; line-height:1.65; color:var(--black);
+                    background:#fff; border:1px solid var(--graylt); border-radius:8px;
+                    padding:16px 18px; margin-bottom:14px; }
+  .dopt { display:block; width:100%; text-align:left; background:#fff;
+          border:1.5px solid var(--graylt); border-radius:8px; padding:12px 15px;
+          margin-bottom:9px; font-size:13.5px; color:var(--navy); cursor:pointer;
+          font-family:inherit; }
+  .dopt:hover { border-color:var(--navy3); background:var(--bglight); }
+  .dopt .letter { display:inline-block; width:20px; height:20px; border-radius:50%;
+                   background:var(--bgdiag); color:var(--navy2); font-weight:bold;
+                   font-size:11px; text-align:center; line-height:20px; margin-right:9px; }
+  .dopt.chosen.correct { border-color:var(--green); background:var(--greenlt); }
+  .dopt.chosen.correct .letter { background:var(--green); color:#fff; }
+  .dopt.chosen.wrong { border-color:var(--gray); background:var(--bglight); }
+  .dopt.disabled { cursor:default; }
+  .dfeedback { display:none; border-radius:8px; padding:14px 18px; margin-top:6px;
+               font-size:13.5px; line-height:1.6; }
+  .dfeedback.show { display:block; }
+  .dfeedback.correct { background:var(--greenlt); border-left:4px solid var(--green); color:var(--navy2); }
+  .dfeedback.wrong { background:var(--bglight); border-left:4px solid var(--gray); color:var(--navy2); }
+  .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .dfeedback.correct .dtag { color:var(--green); }
+  .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
+
+  /* quiz */
+  .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
+       margin-bottom:12px; }
+  .q .qn { color:var(--gray); font-weight:bold; font-size:11px; letter-spacing:.05em; }
+  .q .qt { color:var(--navy); font-size:14.5px; line-height:1.5; margin:4px 0 10px; }
+  .q button { all:unset; cursor:pointer; color:var(--green); font-weight:bold;
+              font-size:12.5px; }
+  .q button:hover { text-decoration:underline; }
+  .q .ans { display:none; background:var(--bglight); border-left:3px solid var(--gold);
+            padding:10px 14px; margin-top:10px; color:var(--navy2);
+            font-size:13px; line-height:1.6; }
+  .q.revealed .ans { display:block; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 2: Execution</div></div>
+  </div>
+  <div class="badge">ISTM &middot; FLATSAT</div>
+</div>
+
+<main>
+  <div class="lesnum">Lesson 2.2 ISTM Exercise &mdash; Interactive <span class="slochip">SLO 6</span></div>
+  <h1>Interface Safe-to-Mate (Flatsat)</h1>
+  <div class="rule"></div>
+  <div class="hook">CSTM verifies the component. ISTM verifies the other half of the mate: the interface it's about to be connected to. This time, the component is a 3-phase reaction wheel motor.</div>
+
+  <h2 class="sec">CSTM vs. ISTM</h2><div class="secline"></div>
+<p class="body">A CSTM check verifies the <b>component</b> is healthy before it is mated &mdash; that's what you just did with the deployment initiator. An <b>ISTM</b> (Interface Safe-to-Mate) check verifies the other side of that same mate: the harness or interface the component is about to be connected to. You confirm the harness is wired to the correct far-end pins and is electrically clean &mdash; no shorts to structure, no shorts between conductors &mdash; before it is ever allowed near sensitive flight avionics.</p>
+<h2 class="sec">What You're Verifying</h2><div class="secline"></div>
+<p class="body">This harness will carry the three motor-phase drive signals from the avionics box to a reaction wheel assembly (Lesson F.3, GNC). Reaction wheels use a 3-phase brushless DC motor wound in a "wye" configuration &mdash; three windings meeting at a common internal point that is not brought out to a pin. The values below are representative teaching figures, not a specific manufacturer's published spec &mdash; unlike the initiator exercise, real wheel-to-wheel winding resistance varies by design and is taken from that unit's own acceptance data.</p>
+<div class="card"><h2>Fig. 2.2-C &mdash; Schematic Diagram</h2><div class="hint">The wye-wound motor circuit and case-isolation reference.</div><div style="background:#fff; border:1px solid var(--graylt); border-radius:8px; padding:16px; overflow-x:auto;">
+<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:640px; display:block; margin:0 auto;">
+  <text x="320" y="16" text-anchor="middle" font-family="Helvetica" font-size="12"
+        font-weight="bold" fill="var(--navy2)">REACTION WHEEL MOTOR &#8212; 3-PHASE WYE WINDING (REPRESENTATIVE)</text>
+
+  <circle cx="320" cy="80" r="4.5" fill="var(--navy)"/>
+  <text x="320" y="48" text-anchor="middle" font-family="Helvetica" font-size="11" fill="var(--gray)">WYE POINT (internal)</text>
+
+  <g transform="translate(320,80) rotate(150)">
+    <line x1="0" y1="0" x2="20" y2="0" stroke="var(--navy)" stroke-width="2"/>
+    <path d="M20,0 L30,-8 L44,8 L58,-8 L72,8 L86,-8 L100,0" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linejoin="round"/>
+    <line x1="100" y1="0" x2="130" y2="0" stroke="var(--navy)" stroke-width="2"/>
+    <circle cx="130" cy="0" r="8" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  </g>
+  <text x="172" y="150" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">U</text>
+
+  <g transform="translate(320,80) rotate(30)">
+    <line x1="0" y1="0" x2="20" y2="0" stroke="var(--navy)" stroke-width="2"/>
+    <path d="M20,0 L30,-8 L44,8 L58,-8 L72,8 L86,-8 L100,0" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linejoin="round"/>
+    <line x1="100" y1="0" x2="130" y2="0" stroke="var(--navy)" stroke-width="2"/>
+    <circle cx="130" cy="0" r="8" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  </g>
+  <text x="468" y="150" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">V</text>
+
+  <g transform="translate(320,80) rotate(90)">
+    <line x1="0" y1="0" x2="20" y2="0" stroke="var(--navy)" stroke-width="2"/>
+    <path d="M20,0 L30,-8 L44,8 L58,-8 L72,8 L86,-8 L100,0" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linejoin="round"/>
+    <line x1="100" y1="0" x2="130" y2="0" stroke="var(--navy)" stroke-width="2"/>
+    <circle cx="130" cy="0" r="8" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  </g>
+  <text x="320" y="228" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">W</text>
+
+  <text x="320" y="248" text-anchor="middle" font-family="Helvetica" font-size="11.5" fill="var(--gray)">U-V &#8776; V-W &#8776; U-W &#8776; 2.4 &#937; each (should balance across all three pairs)</text>
+
+  <line x1="340" y1="80" x2="530" y2="80" stroke="var(--gray)" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <text x="435" y="74" text-anchor="middle" font-family="Helvetica" font-size="10.5" fill="var(--gray)">Insulation R &#8805; 10 M&#937; @ 500VDC (representative)</text>
+  <line x1="560" y1="60" x2="560" y2="100" stroke="var(--navy)" stroke-width="2.5"/>
+  <line x1="548" y1="108" x2="572" y2="108" stroke="var(--navy)" stroke-width="2.5"/>
+  <line x1="553" y1="116" x2="567" y2="116" stroke="var(--navy)" stroke-width="2"/>
+  <line x1="557" y1="124" x2="563" y2="124" stroke="var(--navy)" stroke-width="1.5"/>
+  <text x="560" y="144" text-anchor="middle" font-family="Helvetica" font-size="11" font-weight="bold" fill="var(--navy2)">CASE</text>
+</svg>
+</div></div>
+<div class="card"><h2>Fig. 2.2-D &mdash; Terminal Diagram</h2><div class="hint">The physical harness connector, mating face.</div><div style="background:#fff; border:1px solid var(--graylt); border-radius:8px; padding:16px; overflow-x:auto;">
+<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:640px; display:block; margin:0 auto;">
+  <text x="320" y="16" text-anchor="middle" font-family="Helvetica" font-size="12"
+        font-weight="bold" fill="var(--navy2)">MOTOR HARNESS CONNECTOR &#8212; MATING FACE</text>
+
+  <circle cx="230" cy="140" r="95" fill="var(--bgdiag)" stroke="var(--navy)" stroke-width="2.5"/>
+  <path d="M230,45 L244,22 L216,22 Z" fill="var(--gold)"/>
+  <text x="230" y="35" text-anchor="middle" font-family="Helvetica" font-size="9" font-weight="bold" fill="#fff">KEY</text>
+
+  <circle cx="230" cy="95" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="230" y="100" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">U</text>
+  <circle cx="285" cy="140" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="285" y="145" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">V</text>
+  <circle cx="230" cy="185" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="230" y="190" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">W</text>
+  <circle cx="175" cy="140" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="175" y="145" text-anchor="middle" font-family="Helvetica" font-size="12" font-weight="bold" fill="var(--navy)">CASE</text>
+
+  <line x1="380" y1="95" x2="440" y2="95" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="99" font-family="Helvetica" font-size="12" fill="var(--navy2)">Pin U &#8212; Phase U</text>
+  <line x1="380" y1="125" x2="440" y2="125" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="129" font-family="Helvetica" font-size="12" fill="var(--navy2)">Pin V &#8212; Phase V</text>
+  <line x1="380" y1="155" x2="440" y2="155" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="159" font-family="Helvetica" font-size="12" fill="var(--navy2)">Pin W &#8212; Phase W</text>
+  <line x1="380" y1="185" x2="440" y2="185" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="189" font-family="Helvetica" font-size="12" fill="var(--navy2)">Pin CASE &#8212; chassis reference</text>
+</svg>
+</div></div>
+<h2 class="sec">The Balance Check &mdash; A New Technique</h2><div class="secline"></div>
+<p class="body">Every CSTM check so far has compared one measurement against one expected value. A 3-phase wye motor gives you a second technique: because all three windings are (by design) nominally identical, the phase-to-phase resistance between every pair &mdash; U-V, V-W, and U-W &mdash; should <b>match each other</b>, not just match a single spec number. A winding fault often shows up as one pair reading noticeably different from the other two, even when no single reading looks obviously wrong on its own.</p>
+<div class="card"><h2>Exercise &mdash; Predict and Check</h2>
+    <div class="hint">Draft your answer, then reveal a model answer to self-check.</div>
+    <div class="scenario-text">Before mating this harness, you will measure phase-to-phase resistance across all three winding pairs and insulation resistance from each phase to the case. Using Fig. 2.2-C, state what a <b>healthy</b> result looks like for each measurement, and what a result would need to look like to fail the check even if every individual number were "reasonable."</div>
+    <label class="exercise-label" for="istm22-phase">Phase-to-Phase Result</label><textarea class="exercise-field" id="istm22-phase" rows="2" placeholder="What should U-V, V-W, and U-W look like together?"></textarea><label class="exercise-label" for="istm22-insulation">Insulation Resistance Result</label><textarea class="exercise-field" id="istm22-insulation" rows="2" placeholder="What should each phase-to-case reading look like?"></textarea>
+    <button class="dopt" id="istm22-reveal-btn" style="margin-top:12px; text-align:center;">Compare to a model answer &rsaquo;</button>
+    <div class="dfeedback" id="istm22-modelbox">
+      <span class="dtag">MODEL ANSWER</span>
+      <p><b>Phase-to-phase:</b> All three pairs (U-V, V-W, U-W) should read approximately the same value &mdash; around 2.4 &#937; each in this example, with only small run-to-run variation. A fail is not just a reading far from 2.4 &#937; &mdash; it is any one pair reading meaningfully different from the <i>other two</i>, even if that reading alone would look plausible in isolation.</p><p><b>Insulation resistance:</b> Each phase (U, V, W) measured to case should read &#8805; 10 M&#937; @ 500 VDC, with the harness fully de-energized. A low reading on any single phase indicates a winding-to-case insulation breakdown on that phase specifically.</p>
+      <ul class="exercise-checklist"><li>Did you compare the three phase pairs to each other, not just to a single fixed number?</li><li>Did you specify de-energizing the harness before this check, same as any resistance measurement?</li></ul>
+    </div>
+    </div>
+<div class="card"><h2>Scenario &mdash; An Unbalanced Reading</h2><div class="hint">Read the three results together, then choose your assessment.</div><div class="scenario-text">You measure U-V = <b>2.4 &#937;</b>, V-W = <b>2.4 &#937;</b>, and U-W = <b>0.2 &#937;</b>. Every individual number is a plausible-looking low resistance value. <b>What is your assessment?</b></div><div id="rw-decision-card"></div></div>
+<h2 class="sec">Real-World Grounding</h2><div class="secline"></div>
+<p class="body">The phase-balance technique itself is real, standard motor and generator maintenance practice &mdash; comparing multiple nominally-identical windings against each other, not just against a fixed number, catches faults a single-measurement check would miss. The measurement discipline (de-energize first, then measure resistance) is the same NEETS Module 3 ohmmeter principle from Lesson 2.1, applied here to a three-winding component instead of a two-terminal one.</p>
+
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+
+<script>
+const ACCORDIONS = [];
+ACCORDIONS.forEach(acc => {
+  const mount = document.getElementById(acc.mount);
+  if (!mount) return;
+  acc.items.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'comp';
+    let exHtml = '';
+    if (c.good || c.bad) {
+      exHtml = '<div class="ex">' +
+        (c.good ? '<div class="good"><span class="lbl">GOOD</span>' + c.good + '</div>' : '') +
+        (c.bad ? '<div class="bad"><span class="lbl">VAGUE</span>' + c.bad + '</div>' : '') +
+        '</div>';
+    }
+    d.innerHTML = '<button><span class="dot"></span><span class="name">' + c.name +
+      '</span><span class="sub">' + (c.sub || '') + '</span><span class="chev">&#8250;</span></button>' +
+      '<div class="body"><p>' + c.body + '</p>' + exHtml + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('open'));
+    mount.appendChild(d);
+  });
+});
+
+const QUIZ = [];
+const quizMount = document.getElementById('quiz');
+if (quizMount) {
+  QUIZ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<div class="qn">QUESTION ' + (i + 1) + '</div>' +
+      '<div class="qt">' + q.q + '</div>' +
+      '<button>Reveal what a strong answer covers &#8250;</button>' +
+      '<div class="ans">' + q.a + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('revealed'));
+    quizMount.appendChild(d);
+  });
+}
+
+const CHAINS = [];
+CHAINS.forEach(chain => {
+  const mount = document.getElementById(chain.mount);
+  if (!mount) return;
+  chain.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'chain-node' + (n.critical ? ' critical' : '');
+    el.setAttribute('tabindex', '0');
+    el.innerHTML = '<div class="cn-title">' + n.title + '</div>' +
+      (n.sub ? '<div class="cn-sub">' + n.sub + '</div>' : '') +
+      '<div class="tip"><h4>' + n.title + '</h4><p>' + n.detail + '</p></div>';
+    mount.appendChild(el);
+  });
+});
+
+const DECISIONS = [{"mount": "rw-decision-card", "options": [{"text": "All three readings are low resistance values in a similar range, so this passes &mdash; proceed with mating.", "correct": false, "feedback": "\"Similar range\" is not the same as \"balanced.\" 0.2 &#937; is an order of magnitude below the other two pairs &mdash; that gap is the actual signal here, not the fact that all three numbers happen to be small."}, {"text": "The U-W reading is significantly lower than U-V and V-W, which is not consistent with three matched windings &mdash; this indicates a likely partial short in the U or W winding. Hold, document, and do not mate the connector.", "correct": true, "feedback": "Correct. A healthy wye motor gives you three closely-matched phase-to-phase readings. When one pair reads far lower than the other two, that asymmetry itself is the defect signature &mdash; a partial short shows up exactly this way, even though 0.2 &#937; alone might look like an unremarkable number."}, {"text": "Average the three readings together to get a single representative phase resistance and compare that average to the 2.4 &#937; spec.", "correct": false, "feedback": "Averaging would hide exactly the problem this check exists to find. (2.4+2.4+0.2)/3 &#8776; 1.67 &#937; &mdash; a number that doesn't obviously fail anything, even though one winding is clearly faulted. Compare the three readings to each other, never collapse them into one."}, {"text": "Remeasure U-W several more times and use whichever reading is closest to 2.4 &#937;.", "correct": false, "feedback": "Selecting the most convenient reading out of several attempts is the same rationalization pattern flagged in the CSTM exercise &mdash; picking data to match an expectation instead of reporting what the circuit actually shows."}]}];
+DECISIONS.forEach(dec => {
+  const mount = document.getElementById(dec.mount);
+  if (!mount) return;
+  const feedback = document.createElement('div');
+  feedback.className = 'dfeedback';
+  mount.appendChild(feedback);
+  let answered = false;
+  dec.options.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    const btn = document.createElement('button');
+    btn.className = 'dopt';
+    btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
+      feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
+        '</span>' + opt.feedback;
+    });
+    mount.insertBefore(btn, feedback);
+  });
+});
+
+
+document.getElementById('istm22-reveal-btn').addEventListener('click', () => {
+  const box = document.getElementById('istm22-modelbox');
+  box.classList.add('show', 'correct');
+});
+</script>
+</body>
+</html>

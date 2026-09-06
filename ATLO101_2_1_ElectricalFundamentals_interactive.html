@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Lesson 2.1: Electrical Fundamentals: Schematics & Circuit Basics</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badge { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:860px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; display:flex;
+            align-items:center; gap:10px; flex-wrap:wrap; }
+  .slochip { background:var(--bgdiag); border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:11px; letter-spacing:.03em;
+             padding:3px 9px; border-radius:20px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.15; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:26px; }
+
+  .card { background:var(--bgdiag); border:1px solid var(--graylt);
+          border-radius:10px; padding:18px; margin-bottom:26px; }
+  .card > h2 { text-align:center; color:var(--navy); font-size:13px;
+               letter-spacing:.05em; text-transform:uppercase;
+               border-bottom:1px solid var(--graylt); padding-bottom:10px; margin-bottom:6px; }
+  .hint { text-align:center; color:var(--gray); font-size:11.5px; margin-bottom:12px; }
+
+  /* accordion (roles, phases, procedure anatomy, test-plan elements, deliverables) */
+  .comp { background:#fff; border:1px solid var(--graylt); border-radius:8px;
+          margin-bottom:10px; overflow:hidden; }
+  .comp button { all:unset; display:flex; width:100%; align-items:center;
+                 gap:12px; padding:13px 16px; cursor:pointer; }
+  .comp button:hover { background:var(--bglight); }
+  .comp .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex:none; }
+  .comp .name { font-weight:bold; color:var(--navy); font-size:14.5px; }
+  .comp .sub { color:var(--gray); font-size:12px; margin-left:auto; padding-right:8px; }
+  .comp .chev { color:var(--green); font-weight:bold; transition:transform .2s; flex:none; }
+  .comp.open .chev { transform:rotate(90deg); }
+  .comp .body { display:none; padding:0 16px 15px 38px; color:var(--navy2);
+                font-size:13.5px; line-height:1.6; }
+  .comp.open .body { display:block; }
+  .comp .body p { margin-bottom:8px; }
+  .comp .body p:last-child { margin-bottom:0; }
+
+  .ex { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .ex > div { flex:1; min-width:200px; border-radius:6px; padding:8px 11px; font-size:12.5px; }
+  .ex .good { background:var(--greenlt); border-left:3px solid var(--green); }
+  .ex .bad { background:var(--bglight); border-left:3px solid var(--gray); }
+  .ex .lbl { font-weight:bold; font-size:10.5px; letter-spacing:.04em; display:block; margin-bottom:3px; }
+  .ex .good .lbl { color:var(--green); }
+  .ex .bad .lbl { color:var(--gray); }
+
+  h2.sec { color:var(--navy2); font-size:19px; margin:30px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:12px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; text-align:justify; }
+  ul.body-list { margin:0 0 15px 20px; }
+  ul.body-list li { font-size:14.5px; line-height:1.6; margin-bottom:7px; color:var(--black); }
+
+  .keypoint { background:var(--greenlt); border:1px solid var(--green);
+              border-left:4px solid var(--green); border-radius:4px;
+              padding:14px 18px; margin:8px 0 26px; }
+  .keypoint .kt { color:var(--green); font-weight:bold; font-size:12.5px;
+                  letter-spacing:.04em; margin-bottom:5px; }
+  .keypoint p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .keypoint.gold { background:var(--goldlt); border-color:var(--gold); }
+  .keypoint.gold .kt { color:var(--gold); }
+
+  /* chain diagram (mission lifecycle / critical path) */
+  .chain-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+  .chain-node { position:relative; flex:1 1 110px; min-width:100px; max-width:150px;
+                background:#fff; border:2px solid var(--graylt); border-radius:8px;
+                padding:12px 10px; text-align:center; cursor:pointer; }
+  .chain-node .cn-title { font-weight:bold; color:var(--navy); font-size:12.5px; line-height:1.3; }
+  .chain-node .cn-sub { color:var(--gray); font-size:10.5px; margin-top:3px; }
+  .chain-node.critical { border-color:var(--gold); background:var(--goldlt); }
+  .chain-node.critical .cn-title { color:#92400E; }
+  .chain-node:hover, .chain-node:focus { border-color:var(--green); outline:none; }
+  .chain-node .tip { position:absolute; left:50%; top:110%; transform:translateX(-50%);
+               width:230px; max-width:70vw; background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px; padding:11px 13px;
+               box-shadow:0 8px 22px rgba(11,24,41,.30); opacity:0; visibility:hidden;
+               transition:opacity .15s; pointer-events:none; z-index:30; text-align:left; }
+  .chain-node.critical .tip { border-left-color:var(--gold); }
+  .chain-node:hover .tip, .chain-node:focus .tip { opacity:1; visibility:visible; }
+  .chain-node .tip h4 { color:var(--navy); font-size:12.5px; margin:0 0 4px; }
+  .chain-node .tip p { color:var(--navy2); font-size:11.5px; line-height:1.5; margin:0; font-weight:normal; }
+  .chain-legend { display:flex; gap:18px; justify-content:center; margin-top:34px;
+                  font-size:11px; color:var(--gray); flex-wrap:wrap; }
+  .chain-legend span { display:inline-flex; align-items:center; gap:5px; }
+  .chain-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .chain-legend .lc1 { background:#fff; border:2px solid var(--graylt); }
+  .chain-legend .lc2 { background:var(--goldlt); border:2px solid var(--gold); }
+
+  /* decision scenario */
+  .scenario-text { font-size:14px; line-height:1.65; color:var(--black);
+                    background:#fff; border:1px solid var(--graylt); border-radius:8px;
+                    padding:16px 18px; margin-bottom:14px; }
+  .dopt { display:block; width:100%; text-align:left; background:#fff;
+          border:1.5px solid var(--graylt); border-radius:8px; padding:12px 15px;
+          margin-bottom:9px; font-size:13.5px; color:var(--navy); cursor:pointer;
+          font-family:inherit; }
+  .dopt:hover { border-color:var(--navy3); background:var(--bglight); }
+  .dopt .letter { display:inline-block; width:20px; height:20px; border-radius:50%;
+                   background:var(--bgdiag); color:var(--navy2); font-weight:bold;
+                   font-size:11px; text-align:center; line-height:20px; margin-right:9px; }
+  .dopt.chosen.correct { border-color:var(--green); background:var(--greenlt); }
+  .dopt.chosen.correct .letter { background:var(--green); color:#fff; }
+  .dopt.chosen.wrong { border-color:var(--gray); background:var(--bglight); }
+  .dopt.disabled { cursor:default; }
+  .dfeedback { display:none; border-radius:8px; padding:14px 18px; margin-top:6px;
+               font-size:13.5px; line-height:1.6; }
+  .dfeedback.show { display:block; }
+  .dfeedback.correct { background:var(--greenlt); border-left:4px solid var(--green); color:var(--navy2); }
+  .dfeedback.wrong { background:var(--bglight); border-left:4px solid var(--gray); color:var(--navy2); }
+  .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .dfeedback.correct .dtag { color:var(--green); }
+  .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
+
+  /* quiz */
+  .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
+       margin-bottom:12px; }
+  .q .qn { color:var(--gray); font-weight:bold; font-size:11px; letter-spacing:.05em; }
+  .q .qt { color:var(--navy); font-size:14.5px; line-height:1.5; margin:4px 0 10px; }
+  .q button { all:unset; cursor:pointer; color:var(--green); font-weight:bold;
+              font-size:12.5px; }
+  .q button:hover { text-decoration:underline; }
+  .q .ans { display:none; background:var(--bglight); border-left:3px solid var(--gold);
+            padding:10px 14px; margin-top:10px; color:var(--navy2);
+            font-size:13px; line-height:1.6; }
+  .q.revealed .ans { display:block; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 2: Execution</div></div>
+  </div>
+  <div class="badge">LESSON 2.1</div>
+</div>
+
+<main>
+  <div class="lesnum">Lesson 2.1 &mdash; Interactive <span class="slochip">SLO 6</span></div>
+  <h1>Electrical Fundamentals: Schematics &amp; Circuit Basics</h1>
+  <div class="rule"></div>
+  <div class="hook">Before you ever touch a multimeter to a spacecraft connector, you have to know two things cold: what the circuit is supposed to do, and what number your meter should show if it's doing it. That starts with reading a schematic.</div>
+
+  <h2 class="sec">Why This Lesson Comes First in Execution</h2><div class="secline"></div>
+<p class="body">Every subsystem you will integrate in this module &mdash; heaters, thermistors, valves, reaction wheels, avionics boxes &mdash; is described by a set of engineering drawings before it is ever hardware in your hands. Reading those drawings correctly, and calculating what a healthy circuit should measure before you measure it, is what separates a real verification from guessing.</p>
+<p class="body">This is not course-invented theory. The diagram types and measurement discipline in this lesson come directly from the Navy Electricity and Electronics Training Series (NEETS) &mdash; the same public-domain training curriculum used to teach electricians and technicians these fundamentals for decades. Module 4, "Schematic Reading," and Module 3, "Circuit Protection, Control, and Measuring Devices," are cited throughout.</p>
+<div class="card"><h2>The Diagram Family</h2><div class="hint">Click each diagram type to see what it shows and when an ATLO engineer reaches for it. (NEETS Module 4, Ch. 3)</div><div id="diagram-family-card"></div></div>
+<h2 class="sec">Schematic vs. Wiring Diagram &mdash; Two Views of the Same Circuit</h2><div class="secline"></div>
+<p class="body">A <b>schematic diagram</b> shows the electrical relationship between components &mdash; what is connected to what, and through what &mdash; using standard symbols. It does not show you where those components physically are, or which pin on a real connector you are looking at.</p>
+<p class="body">A <b>wiring diagram</b> (or terminal diagram, for a single connector) shows the physical reality: real connectors, real pin numbers, real terminal boards. NEETS Module 4 states this directly: the schematic tells you where the trouble electrically <i>should</i> be; the wiring diagram tells you where to actually put your meter leads to check it.</p>
+<p class="body">Below is both views of the same fictional connector, J1, which you will use for the CSTM exercise later in this lesson. Compare them side by side.</p>
+<div class="card"><h2>Fig. 2.1-A &mdash; Schematic Diagram</h2><div class="hint">The electrical relationship only. Resistor symbol for the heater, thermistor symbol for the temperature sensor &mdash; same convention NEETS Module 4 uses for its water-temperature element (Fig. 3-10).</div><div style="background:#fff; border:1px solid var(--graylt); border-radius:8px; padding:16px; overflow-x:auto;">
+<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:640px; display:block; margin:0 auto;">
+  <rect x="70" y="20" width="500" height="220" rx="10" fill="none"
+        stroke="var(--gray)" stroke-width="1.5" stroke-dasharray="6,5"/>
+  <text x="320" y="14" text-anchor="middle" font-family="Helvetica" font-size="12"
+        font-weight="bold" fill="var(--navy2)">CONNECTOR J1 &#8212; INTERNAL CIRCUIT (AS DESIGNED)</text>
+
+  <!-- Row 1: Pin A -- Heater R1 -- Pin B -->
+  <circle cx="55" cy="70" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="30" y="75" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">A</text>
+  <line x1="62" y1="70" x2="230" y2="70" stroke="var(--navy)" stroke-width="2"/>
+  <path d="M230,70 L242,55 L258,85 L274,55 L290,85 L306,55 L322,70"
+        fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linejoin="round"/>
+  <line x1="322" y1="70" x2="480" y2="70" stroke="var(--navy)" stroke-width="2"/>
+  <circle cx="487" cy="70" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="512" y="75" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">B</text>
+  <text x="276" y="42" text-anchor="middle" font-family="Helvetica" font-size="12" font-weight="bold" fill="var(--navy2)">R1 &#8212; PATCH HEATER</text>
+  <text x="276" y="100" text-anchor="middle" font-family="Helvetica" font-size="11.5" fill="var(--gray)">&#8776; 24.5 &#937; &#183; 28 VDC / 32 W spec</text>
+
+  <!-- Row 2: Pin C -- Thermistor RT1 -- Pin D -->
+  <circle cx="55" cy="180" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="30" y="185" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">C</text>
+  <line x1="62" y1="180" x2="230" y2="180" stroke="var(--navy)" stroke-width="2"/>
+  <path d="M230,180 L242,165 L258,195 L274,165 L290,195 L306,165 L322,180"
+        fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linejoin="round"/>
+  <line x1="248" y1="200" x2="304" y2="150" stroke="var(--green)" stroke-width="2"/>
+  <polygon points="304,150 296,152 302,158" fill="var(--green)"/>
+  <text x="316" y="152" font-family="Helvetica" font-size="11" fill="var(--green)">-t&#176;</text>
+  <line x1="322" y1="180" x2="480" y2="180" stroke="var(--navy)" stroke-width="2"/>
+  <circle cx="487" cy="180" r="7" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="512" y="185" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">D</text>
+  <text x="276" y="222" text-anchor="middle" font-family="Helvetica" font-size="12" font-weight="bold" fill="var(--navy2)">RT1 &#8212; THERMISTOR (NTC)</text>
+  <text x="276" y="238" text-anchor="middle" font-family="Helvetica" font-size="11.5" fill="var(--gray)">&#8776; 10 k&#937; @ 25&#176;C</text>
+</svg>
+</div><div class="hint" style="margin-top:10px; text-align:left;">Two isolated circuits live inside this one connector. Nothing connects Row 1 (A&ndash;B) to Row 2 (C&ndash;D) &mdash; that isolation is a design requirement, and it is exactly what a CSTM check verifies.</div></div>
+<div class="card"><h2>Fig. 2.1-B &mdash; Wiring / Terminal Diagram</h2><div class="hint">The physical mating face &mdash; where you actually place your multimeter probes.</div><div style="background:#fff; border:1px solid var(--graylt); border-radius:8px; padding:16px; overflow-x:auto;">
+<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:640px; display:block; margin:0 auto;">
+  <text x="320" y="16" text-anchor="middle" font-family="Helvetica" font-size="12"
+        font-weight="bold" fill="var(--navy2)">CONNECTOR J1 &#8212; MATING FACE (LOOKING INTO CONNECTOR)</text>
+
+  <circle cx="230" cy="140" r="95" fill="var(--bgdiag)" stroke="var(--navy)" stroke-width="2.5"/>
+  <path d="M230,45 L244,22 L216,22 Z" fill="var(--gold)"/>
+  <text x="230" y="35" text-anchor="middle" font-family="Helvetica" font-size="9" font-weight="bold" fill="#fff">KEY</text>
+
+  <circle cx="230" cy="95" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="230" y="100" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">A</text>
+
+  <circle cx="285" cy="140" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="285" y="145" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">B</text>
+
+  <circle cx="230" cy="185" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="230" y="190" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">C</text>
+
+  <circle cx="175" cy="140" r="15" fill="#fff" stroke="var(--navy)" stroke-width="2"/>
+  <text x="175" y="145" text-anchor="middle" font-family="Helvetica" font-size="13" font-weight="bold" fill="var(--navy)">D</text>
+
+  <line x1="380" y1="95" x2="440" y2="95" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="99" font-family="Helvetica" font-size="12" fill="var(--navy2)">Pin A &#8212; Heater +</text>
+  <line x1="380" y1="125" x2="440" y2="125" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="129" font-family="Helvetica" font-size="12" fill="var(--navy2)">Pin B &#8212; Heater return</text>
+  <line x1="380" y1="155" x2="440" y2="155" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="159" font-family="Helvetica" font-size="12" fill="var(--navy2)">Pin C &#8212; Thermistor signal</text>
+  <line x1="380" y1="185" x2="440" y2="185" stroke="var(--gray)" stroke-width="1.5"/>
+  <text x="448" y="189" font-family="Helvetica" font-size="12" fill="var(--navy2)">Pin D &#8212; Thermistor return</text>
+
+  <text x="230" y="245" text-anchor="middle" font-family="Helvetica" font-size="11" fill="var(--gray)">Key tab at top orients the connector &#8212; this is what you will actually see on the bench</text>
+</svg>
+</div><div class="hint" style="margin-top:10px; text-align:left;">Notice the schematic never told you A and B were physically adjacent, diagonal, or anywhere in particular. You need the terminal diagram for that. This is why an ATLO engineer reviews both drawings before ever picking up a meter.</div></div>
+<h2 class="sec">Ohm's Law and the Ohmmeter</h2><div class="secline"></div>
+<p class="body">Ohm's Law &mdash; <b>V = I &times; R</b> &mdash; is the relationship every resistance calculation in this course comes back to (NEETS Module 1, "Introduction to Matter, Energy, and Direct Current"). For a resistive heater with a known power spec, the more useful form is <b>R = V&sup2; / P</b>, derived from P = V&sup2;/R.</p>
+<p class="body">An ohmmeter measures resistance by pushing a small current from its own internal battery through the circuit under test and reading the result &mdash; which is exactly why NEETS Module 3 lists this as the first safety rule for using one: <b>the circuit must be de-energized before you connect an ohmmeter in series with it.</b> The meter supplies its own source. If the circuit already has power on it, the two sources fight, and at best you get a meaningless reading &mdash; at worst you damage the meter.</p>
+<p class="body">This is the same logic behind a CSTM check: it happens <i>before</i> the connector is mated and <i>before</i> the circuit is powered, using nothing but a multimeter and the resistance you calculated ahead of time from the schematic.</p>
+<div class="keypoint"><div class="kt">KEY POINT</div><p>A CSTM check is really just this sequence, every time: read the schematic to know what should be there &rarr; calculate the expected value with Ohm's Law &rarr; find the physical pins on the wiring/terminal diagram &rarr; measure resistance with the circuit unpowered &rarr; compare. If the exercise ahead feels procedural, that's because it is &mdash; and that's the point.</p></div>
+<div class="card"><h2>Exercise &mdash; Calculate the Expected Resistance</h2>
+    <div class="hint">Draft your calculation, then reveal a model answer to self-check.</div>
+    <div class="scenario-text">Per Fig. 2.1-A, the patch heater on Pins A&ndash;B is specified to dissipate <b>32 W</b> at the nominal spacecraft bus voltage of <b>28 VDC</b>. Using <b>R = V&sup2; / P</b>, calculate the expected resistance between Pins A and B. Then propose a pass/fail tolerance band a CSTM procedure could use (industry-typical practice is &plusmn;10%).</div>
+    <label class="exercise-label" for="ex21-resistance">Expected Resistance (&#937;)</label><textarea class="exercise-field" id="ex21-resistance" rows="2" placeholder="Show your calculation: R = V² / P = ..."></textarea><label class="exercise-label" for="ex21-range">Proposed Pass/Fail Range (&#937;)</label><textarea class="exercise-field" id="ex21-range" rows="2" placeholder="e.g., X Ω to Y Ω"></textarea>
+    <button class="dopt" id="ex21-reveal-btn" style="margin-top:12px; text-align:center;">Compare to a model answer &rsaquo;</button>
+    <div class="dfeedback" id="ex21-modelbox">
+      <span class="dtag">MODEL ANSWER</span>
+      <p><b>R = V&sup2; / P = 28&sup2; / 32 = 784 / 32 = 24.5 &#937;</b></p><p>With a &plusmn;10% tolerance, a CSTM procedure would call out a pass/fail band of approximately <b>22.05 &#937; to 26.95 &#937;</b> (commonly rounded to 22&ndash;27 &#937;). A reading inside that band on Pins A&ndash;B is a pass. A reading of 0 &#937; (short) or OL/infinite (open) is an automatic hold, regardless of how "close" it might otherwise look.</p>
+      <ul class="exercise-checklist"><li>Did you square the voltage, not just multiply it by itself once incorrectly?</li><li>Does your tolerance band bracket your calculated value symmetrically?</li></ul>
+    </div>
+    </div>
+<div class="card"><h2>Scenario &mdash; Reading the CSTM Results</h2><div class="hint">You just ran the CSTM check on connector J1 before it was ever mated to the flight harness. Read the results, then choose what you do next.</div><div class="scenario-text">Pins A&ndash;B (heater): your meter reads <b>24.6 &#937;</b> &mdash; inside the 22&ndash;27 &#937; band you calculated. Pins C&ndash;D (thermistor): you expected roughly <b>10 k&#937;</b> at room temperature, but your meter reads <b>OL</b> (open circuit, infinite resistance). <b>What do you do?</b></div><div id="cstm-decision-card"></div></div>
+<h2 class="sec">Real-World Grounding</h2><div class="secline"></div>
+<p class="body">The diagrams, symbols, and measurement sequence in this lesson are drawn directly from NEETS Module 4 (NAVEDTRA 14176), Chapter 3, "Schematic Reading," and NEETS Module 3 (NAVEDTRA 14174), Chapter 1, on ohmmeters and resistance measurement &mdash; both public-domain U.S. Navy training courses. The connector J1 example is fictional, built for this course, but the diagram conventions, the de-energize-first safety rule, and the schematic-then-wiring-diagram workflow are the same ones used to train working electricians and technicians.</p>
+<h2 class="sec">Lesson Quiz Preview</h2><div class="secline"></div><div class="hint" style="text-align:left; margin-bottom:14px;">Think through your answer first, then reveal what a strong answer covers.</div><div id="quiz"></div>
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+
+<script>
+const ACCORDIONS = [{"mount": "diagram-family-card", "items": [{"name": "Pictorial Diagram", "sub": "What it looks like", "body": "Shows components as they actually appear physically &mdash; a realistic or semi-realistic picture of the hardware and how it is arranged. Easiest for a newcomer to recognize hardware by, hardest to trace a circuit with. (NEETS Module 4, Fig. 3-7)"}, {"name": "Block Diagram", "sub": "The big functional picture", "body": "Shows major functional sections as labeled boxes connected by lines, with no component-level detail. Used to understand how subsystems relate to each other before diving into circuit-level detail. (NEETS Module 4, Fig. 3-8)"}, {"name": "Single-Line Diagram", "sub": "Simplified power routing", "body": "Simplifies multi-conductor circuits down to a single line per circuit, used to show the overall flow of power without every individual connection. (NEETS Module 4, Fig. 3-9)"}, {"name": "Schematic Diagram", "sub": "Electrical relationships", "body": "Shows every component with its standard symbol and exactly how components are electrically connected to each other. This is what you calculate expected values from &mdash; it does not show physical location. (NEETS Module 4, Fig. 3-10)"}, {"name": "Wiring / Terminal Diagram", "sub": "Where to put your probes", "body": "Shows the real, physical wiring: actual connectors, terminal boards, pin numbers, and wire color codes. This is what you use on the bench to find the physical point to take a measurement. NEETS Module 4 is explicit that you need the wiring diagram, not the schematic, to know where to make a voltage or resistance check. (NEETS Module 4, Figs. 3-11, 3-12)"}]}];
+ACCORDIONS.forEach(acc => {
+  const mount = document.getElementById(acc.mount);
+  if (!mount) return;
+  acc.items.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'comp';
+    let exHtml = '';
+    if (c.good || c.bad) {
+      exHtml = '<div class="ex">' +
+        (c.good ? '<div class="good"><span class="lbl">GOOD</span>' + c.good + '</div>' : '') +
+        (c.bad ? '<div class="bad"><span class="lbl">VAGUE</span>' + c.bad + '</div>' : '') +
+        '</div>';
+    }
+    d.innerHTML = '<button><span class="dot"></span><span class="name">' + c.name +
+      '</span><span class="sub">' + (c.sub || '') + '</span><span class="chev">&#8250;</span></button>' +
+      '<div class="body"><p>' + c.body + '</p>' + exHtml + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('open'));
+    mount.appendChild(d);
+  });
+});
+
+const QUIZ = [{"q": "What is the difference between a schematic diagram and a wiring/terminal diagram, and why does an ATLO engineer need to look at both before a CSTM check?", "a": "A schematic shows the electrical relationship between components using symbols, with no physical layout information. A wiring/terminal diagram shows the real, physical connectors and pin locations. The schematic tells you what value to expect; the wiring diagram tells you which physical pins to put your meter leads on to check it."}, {"q": "A heater is specified to dissipate 50 W at a nominal bus voltage of 28 VDC. Using R = V&sup2;/P, what resistance should it measure?", "a": "R = 28\u00b2 / 50 = 784 / 50 = 15.68 \u03a9."}, {"q": "Why must a circuit be de-energized before you connect an ohmmeter to it in series?", "a": "An ohmmeter measures resistance using current from its own internal battery. If the circuit under test still has external power applied, the two sources conflict &mdash; the reading is meaningless at best, and the meter or circuit can be damaged at worst."}, {"q": "During a CSTM check, a circuit expected to read roughly 10 k&#937; instead reads OL (open, infinite resistance). What does that most likely indicate, and what should you do?", "a": "An open reading means there is no continuous path where one is expected &mdash; a broken lead, a bad crimp, or an unconnected pin internal to the connector or component. You do not proceed with mating; you call a hold and document the discrepancy, exactly as you would for any other test anomaly."}, {"q": "ATLO Scenario: You are handed a spacecraft harness connector and told to perform a CSTM check before it is mated. What two engineering drawings should you review first, and what does each one tell you?", "a": "The schematic diagram, which tells you the expected electrical relationship between pins (what should be connected to what, and through what expected resistance), and the wiring/terminal diagram, which tells you the physical pin locations on the actual connector so you know exactly where to place your meter leads."}];
+const quizMount = document.getElementById('quiz');
+if (quizMount) {
+  QUIZ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<div class="qn">QUESTION ' + (i + 1) + '</div>' +
+      '<div class="qt">' + q.q + '</div>' +
+      '<button>Reveal what a strong answer covers &#8250;</button>' +
+      '<div class="ans">' + q.a + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('revealed'));
+    quizMount.appendChild(d);
+  });
+}
+
+const CHAINS = [];
+CHAINS.forEach(chain => {
+  const mount = document.getElementById(chain.mount);
+  if (!mount) return;
+  chain.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'chain-node' + (n.critical ? ' critical' : '');
+    el.setAttribute('tabindex', '0');
+    el.innerHTML = '<div class="cn-title">' + n.title + '</div>' +
+      (n.sub ? '<div class="cn-sub">' + n.sub + '</div>' : '') +
+      '<div class="tip"><h4>' + n.title + '</h4><p>' + n.detail + '</p></div>';
+    mount.appendChild(el);
+  });
+});
+
+const DECISIONS = [{"mount": "cstm-decision-card", "options": [{"text": "Log the heater reading, note that the thermistor reading is \"close enough\" since it's in the general high-resistance neighborhood, and proceed with mating the connector.", "correct": false, "feedback": "OL is not \"close\" to 10 k&#937; &mdash; it is an open circuit, meaning there is no continuous path at all. Treating an open as roughly correct because the number is \"big\" is exactly the kind of rationalization a CSTM check exists to prevent."}, {"text": "The heater circuit (A&ndash;B) checks out. The thermistor circuit (C&ndash;D) does not match its expected value &mdash; call a hold, document the discrepancy, and do not mate the connector until it is resolved.", "correct": true, "feedback": "Exactly right. One circuit passing does not clear the connector as a whole. An open where ~10 k&#937; is expected is a real discrepancy &mdash; possibly a broken internal lead or a bad crimp &mdash; and it has to be resolved before this connector is ever mated to the flight harness."}, {"text": "Assume the meter is on the wrong range and keep switching ranges until you get a reading closer to 10 k&#937;.", "correct": false, "feedback": "Selecting the correct range on a real ohmmeter is legitimate technique &mdash; but switching ranges until the number matches what you wanted to see is not measurement, it's confirmation bias. An open circuit reads open on every range."}, {"text": "Since this connector hasn't been installed on the flight vehicle yet, it's fine to proceed and catch any real problem later during functional test.", "correct": false, "feedback": "The entire point of a CSTM check is to catch exactly this kind of defect before the connector is mated, when it is cheap and safe to fix. Deferring it to functional test means finding out about a bad connection only after it's buried inside an integrated, harder-to-access system."}]}];
+DECISIONS.forEach(dec => {
+  const mount = document.getElementById(dec.mount);
+  if (!mount) return;
+  const feedback = document.createElement('div');
+  feedback.className = 'dfeedback';
+  mount.appendChild(feedback);
+  let answered = false;
+  dec.options.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    const btn = document.createElement('button');
+    btn.className = 'dopt';
+    btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
+      feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
+        '</span>' + opt.feedback;
+    });
+    mount.insertBefore(btn, feedback);
+  });
+});
+
+
+document.getElementById('ex21-reveal-btn').addEventListener('click', () => {
+  const box = document.getElementById('ex21-modelbox');
+  box.classList.add('show', 'correct');
+});
+</script>
+</body>
+</html>

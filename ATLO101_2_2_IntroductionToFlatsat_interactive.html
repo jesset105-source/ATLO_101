@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Lesson 2.2: Introduction to Flatsat</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badge { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:860px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; display:flex;
+            align-items:center; gap:10px; flex-wrap:wrap; }
+  .slochip { background:var(--bgdiag); border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:11px; letter-spacing:.03em;
+             padding:3px 9px; border-radius:20px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.15; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:26px; }
+
+  .card { background:var(--bgdiag); border:1px solid var(--graylt);
+          border-radius:10px; padding:18px; margin-bottom:26px; }
+  .card > h2 { text-align:center; color:var(--navy); font-size:13px;
+               letter-spacing:.05em; text-transform:uppercase;
+               border-bottom:1px solid var(--graylt); padding-bottom:10px; margin-bottom:6px; }
+  .hint { text-align:center; color:var(--gray); font-size:11.5px; margin-bottom:12px; }
+
+  /* accordion (roles, phases, procedure anatomy, test-plan elements, deliverables) */
+  .comp { background:#fff; border:1px solid var(--graylt); border-radius:8px;
+          margin-bottom:10px; overflow:hidden; }
+  .comp button { all:unset; display:flex; width:100%; align-items:center;
+                 gap:12px; padding:13px 16px; cursor:pointer; }
+  .comp button:hover { background:var(--bglight); }
+  .comp .dot { width:10px; height:10px; border-radius:50%; background:var(--green); flex:none; }
+  .comp .name { font-weight:bold; color:var(--navy); font-size:14.5px; }
+  .comp .sub { color:var(--gray); font-size:12px; margin-left:auto; padding-right:8px; }
+  .comp .chev { color:var(--green); font-weight:bold; transition:transform .2s; flex:none; }
+  .comp.open .chev { transform:rotate(90deg); }
+  .comp .body { display:none; padding:0 16px 15px 38px; color:var(--navy2);
+                font-size:13.5px; line-height:1.6; }
+  .comp.open .body { display:block; }
+  .comp .body p { margin-bottom:8px; }
+  .comp .body p:last-child { margin-bottom:0; }
+
+  .ex { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .ex > div { flex:1; min-width:200px; border-radius:6px; padding:8px 11px; font-size:12.5px; }
+  .ex .good { background:var(--greenlt); border-left:3px solid var(--green); }
+  .ex .bad { background:var(--bglight); border-left:3px solid var(--gray); }
+  .ex .lbl { font-weight:bold; font-size:10.5px; letter-spacing:.04em; display:block; margin-bottom:3px; }
+  .ex .good .lbl { color:var(--green); }
+  .ex .bad .lbl { color:var(--gray); }
+
+  h2.sec { color:var(--navy2); font-size:19px; margin:30px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:12px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; text-align:justify; }
+  ul.body-list { margin:0 0 15px 20px; }
+  ul.body-list li { font-size:14.5px; line-height:1.6; margin-bottom:7px; color:var(--black); }
+
+  .keypoint { background:var(--greenlt); border:1px solid var(--green);
+              border-left:4px solid var(--green); border-radius:4px;
+              padding:14px 18px; margin:8px 0 26px; }
+  .keypoint .kt { color:var(--green); font-weight:bold; font-size:12.5px;
+                  letter-spacing:.04em; margin-bottom:5px; }
+  .keypoint p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .keypoint.gold { background:var(--goldlt); border-color:var(--gold); }
+  .keypoint.gold .kt { color:var(--gold); }
+
+  /* chain diagram (mission lifecycle / critical path) */
+  .chain-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:6px; }
+  .chain-node { position:relative; flex:1 1 110px; min-width:100px; max-width:150px;
+                background:#fff; border:2px solid var(--graylt); border-radius:8px;
+                padding:12px 10px; text-align:center; cursor:pointer; }
+  .chain-node .cn-title { font-weight:bold; color:var(--navy); font-size:12.5px; line-height:1.3; }
+  .chain-node .cn-sub { color:var(--gray); font-size:10.5px; margin-top:3px; }
+  .chain-node.critical { border-color:var(--gold); background:var(--goldlt); }
+  .chain-node.critical .cn-title { color:#92400E; }
+  .chain-node:hover, .chain-node:focus { border-color:var(--green); outline:none; }
+  .chain-node .tip { position:absolute; left:50%; top:110%; transform:translateX(-50%);
+               width:230px; max-width:70vw; background:#fff; border:1px solid var(--graylt);
+               border-left:4px solid var(--green); border-radius:8px; padding:11px 13px;
+               box-shadow:0 8px 22px rgba(11,24,41,.30); opacity:0; visibility:hidden;
+               transition:opacity .15s; pointer-events:none; z-index:30; text-align:left; }
+  .chain-node.critical .tip { border-left-color:var(--gold); }
+  .chain-node:hover .tip, .chain-node:focus .tip { opacity:1; visibility:visible; }
+  .chain-node .tip h4 { color:var(--navy); font-size:12.5px; margin:0 0 4px; }
+  .chain-node .tip p { color:var(--navy2); font-size:11.5px; line-height:1.5; margin:0; font-weight:normal; }
+  .chain-legend { display:flex; gap:18px; justify-content:center; margin-top:34px;
+                  font-size:11px; color:var(--gray); flex-wrap:wrap; }
+  .chain-legend span { display:inline-flex; align-items:center; gap:5px; }
+  .chain-legend i { width:11px; height:11px; border-radius:3px; display:inline-block; }
+  .chain-legend .lc1 { background:#fff; border:2px solid var(--graylt); }
+  .chain-legend .lc2 { background:var(--goldlt); border:2px solid var(--gold); }
+
+  /* decision scenario */
+  .scenario-text { font-size:14px; line-height:1.65; color:var(--black);
+                    background:#fff; border:1px solid var(--graylt); border-radius:8px;
+                    padding:16px 18px; margin-bottom:14px; }
+  .dopt { display:block; width:100%; text-align:left; background:#fff;
+          border:1.5px solid var(--graylt); border-radius:8px; padding:12px 15px;
+          margin-bottom:9px; font-size:13.5px; color:var(--navy); cursor:pointer;
+          font-family:inherit; }
+  .dopt:hover { border-color:var(--navy3); background:var(--bglight); }
+  .dopt .letter { display:inline-block; width:20px; height:20px; border-radius:50%;
+                   background:var(--bgdiag); color:var(--navy2); font-weight:bold;
+                   font-size:11px; text-align:center; line-height:20px; margin-right:9px; }
+  .dopt.chosen.correct { border-color:var(--green); background:var(--greenlt); }
+  .dopt.chosen.correct .letter { background:var(--green); color:#fff; }
+  .dopt.chosen.wrong { border-color:var(--gray); background:var(--bglight); }
+  .dopt.disabled { cursor:default; }
+  .dfeedback { display:none; border-radius:8px; padding:14px 18px; margin-top:6px;
+               font-size:13.5px; line-height:1.6; }
+  .dfeedback.show { display:block; }
+  .dfeedback.correct { background:var(--greenlt); border-left:4px solid var(--green); color:var(--navy2); }
+  .dfeedback.wrong { background:var(--bglight); border-left:4px solid var(--gray); color:var(--navy2); }
+  .dfeedback .dtag { font-weight:bold; font-size:11px; letter-spacing:.05em; display:block; margin-bottom:5px; }
+  .dfeedback.correct .dtag { color:var(--green); }
+  .dfeedback.wrong .dtag { color:var(--gray); }
+  .dfeedback.gold { background:var(--goldlt); border-left:4px solid var(--gold); color:var(--navy2); }
+  .dfeedback.gold .dtag { color:var(--gold); }
+
+  /* written exercise */
+  .exercise-label { display:block; font-weight:bold; color:var(--navy); font-size:12px;
+                     margin:14px 0 5px; }
+  .exercise-label:first-of-type { margin-top:4px; }
+  .exercise-field { width:100%; border:1.5px solid var(--graylt); border-radius:8px;
+                     padding:10px 12px; font-family:inherit; font-size:13.5px;
+                     color:var(--black); resize:vertical; }
+  .exercise-field:focus { outline:none; border-color:var(--navy3); }
+  .exercise-checklist { margin:10px 0 0 20px; }
+  .exercise-checklist li { font-size:12.5px; color:var(--navy2); line-height:1.6; }
+
+  /* simulator */
+  .sim-row { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-top:6px; }
+  .sim-field { display:flex; flex-direction:column; gap:4px; }
+  .sim-field label { font-size:11px; font-weight:bold; color:var(--navy); letter-spacing:.03em; }
+  .sim-field select, .sim-field input { border:1.5px solid var(--graylt); border-radius:6px;
+                     padding:8px 10px; font-family:inherit; font-size:13px; color:var(--black); }
+  .sim-btn-el { all:unset; cursor:pointer; background:var(--navy); color:#fff; font-weight:bold;
+               font-size:13px; padding:9px 18px; border-radius:6px; }
+  .sim-btn-el:hover { background:var(--navy2); }
+
+  /* quiz */
+  .q { border:1px solid var(--graylt); border-radius:8px; padding:15px 18px;
+       margin-bottom:12px; }
+  .q .qn { color:var(--gray); font-weight:bold; font-size:11px; letter-spacing:.05em; }
+  .q .qt { color:var(--navy); font-size:14.5px; line-height:1.5; margin:4px 0 10px; }
+  .q button { all:unset; cursor:pointer; color:var(--green); font-weight:bold;
+              font-size:12.5px; }
+  .q button:hover { text-decoration:underline; }
+  .q .ans { display:none; background:var(--bglight); border-left:3px solid var(--gold);
+            padding:10px 14px; margin-top:10px; color:var(--navy2);
+            font-size:13px; line-height:1.6; }
+  .q.revealed .ans { display:block; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 2: Execution</div></div>
+  </div>
+  <div class="badge">LESSON 2.2</div>
+</div>
+
+<main>
+  <div class="lesnum">Lesson 2.2 &mdash; Interactive <span class="slochip">SLO 5</span></div>
+  <h1>Introduction to Flatsat</h1>
+  <div class="rule"></div>
+  <div class="hook">Before a single command, procedure, or line of flight software ever touches the actual spacecraft, it runs on flatsat first &mdash; a bench full of engineering-model avionics that lets you find out what breaks without risking anything that will fly.</div>
+
+  <h2 class="sec">What Flatsat Is</h2><div class="secline"></div>
+<p class="body">Flatsat is a "flat" (non-flight-form) assembly of engineering-model (EM) avionics &mdash; the flight computer, power distribution, RF, and other electronics boxes &mdash; wired together on a bench or in a rack instead of bolted into a spacecraft structure. It runs the same flight software, is commanded through the same ground system, and receives the same procedures the flight vehicle will &mdash; the difference is the hardware underneath is not flight hardware, and there is no flight structure, thermal environment, or mechanical integration to go with it.</p>
+<p class="body">That distinction matters: flatsat is not "practice testing" in some watered-down sense. It is real verification, run against real flight software and real procedures, on hardware you are allowed to get wrong.</p>
+<div class="card"><h2>Simulation &mdash; The Cost of Finding It Late</h2>
+    <div class="hint">Pick a type of problem, then see how the consequence changes depending on where in the campaign it is actually found.</div>
+    <div class="sim-row">
+      <div class="sim-field" style="flex:1; min-width:260px;">
+        <label for="flatsat-impact-sim-pick">Anomaly Type</label>
+        <select id="flatsat-impact-sim-pick"><option value="0">Wrong telemetry mnemonic referenced in a procedure step</option><option value="1">Missing prerequisite step (e.g., forgot to enable a power rail first)</option><option value="2">Sign error in a control-loop gain parameter</option></select>
+      </div>
+      <button class="sim-btn-el" id="flatsat-impact-sim-btn">See the Cost of Finding This Late</button>
+    </div>
+    <div id="flatsat-impact-sim-result" style="margin-top:14px;"></div>
+    </div>
+<h2 class="sec">Why Flatsat Exists</h2><div class="secline"></div>
+<p class="body">Every hour a defect spends undiscovered gets more expensive to fix the further it travels through the campaign. A procedure bug caught on flatsat is a five-minute edit. The same bug caught on the flight vehicle is a hold, a Discrepancy Report, a review cycle, and lost schedule &mdash; exactly the kind of schedule slip driver you learned about in Lesson 1.3. Flatsat exists to move that discovery as early and as cheap as possible.</p>
+<div class="card"><h2>What Gets Validated on Flatsat</h2><div class="hint">Click each item to see why it has to be proven here first.</div><div id="flatsat-validates-card"></div></div>
+<div class="keypoint"><div class="kt">KEY POINT</div><p>Every CSTM and ISTM exercise in this lesson and the next is first practiced on flatsat, exactly like every procedure is. The connector, the meter, and the pass/fail logic are real &mdash; the consequence of a mistake is not, which is exactly why this is where you learn it.</p></div>
+<h2 class="sec">Lesson Quiz Preview</h2><div class="secline"></div><div class="hint" style="text-align:left; margin-bottom:14px;">Think through your answer first, then reveal what a strong answer covers.</div><div id="quiz"></div>
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+
+<script>
+const ACCORDIONS = [{"mount": "flatsat-validates-card", "items": [{"name": "Flight Software Builds", "sub": "Before it ever flies", "body": "Every flight software load is run on flatsat first &mdash; the same binary that will eventually fly, exercised against EM avionics to catch integration issues before they reach flight hardware."}, {"name": "Ground Command Procedures", "sub": "Every step, every sequence", "body": "Procedures are authored, then validated on flatsat (Lesson 1.4) &mdash; this is where a wrong telemetry reference or a missing prerequisite step actually gets found."}, {"name": "Telemetry Point Mapping", "sub": "Does the ground system see what it should?", "body": "Flatsat confirms that every telemetry point the ground system expects to see actually maps to the right signal &mdash; a mismatch here would silently corrupt every procedure that depends on that point."}, {"name": "CSTM / ISTM Procedures", "sub": "The exercises in this lesson", "body": "The Component and Interface Safe-to-Mate procedures you are about to practice are themselves validated on flatsat hardware first &mdash; before they are ever run against a connector that is about to be mated to the flight vehicle."}, {"name": "Anomaly Response Procedures", "sub": "Practicing the hold", "body": "Even the procedures for how to respond to an anomaly &mdash; documenting it, notifying the Test Director, escalating to the right subsystem engineer &mdash; get exercised on flatsat so the response is second nature before it matters."}]}];
+ACCORDIONS.forEach(acc => {
+  const mount = document.getElementById(acc.mount);
+  if (!mount) return;
+  acc.items.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'comp';
+    let exHtml = '';
+    if (c.good || c.bad) {
+      exHtml = '<div class="ex">' +
+        (c.good ? '<div class="good"><span class="lbl">GOOD</span>' + c.good + '</div>' : '') +
+        (c.bad ? '<div class="bad"><span class="lbl">VAGUE</span>' + c.bad + '</div>' : '') +
+        '</div>';
+    }
+    d.innerHTML = '<button><span class="dot"></span><span class="name">' + c.name +
+      '</span><span class="sub">' + (c.sub || '') + '</span><span class="chev">&#8250;</span></button>' +
+      '<div class="body"><p>' + c.body + '</p>' + exHtml + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('open'));
+    mount.appendChild(d);
+  });
+});
+
+const QUIZ = [{"q": "What is flatsat, and what is the key difference between it and the flight vehicle?", "a": "Flatsat is engineering-model avionics wired together on a bench, running the same flight software and procedures as the flight vehicle. The key difference is the hardware is not flight hardware, and there is no flight structure or thermal environment involved."}, {"q": "Why is a procedure bug caught on flatsat cheaper than the same bug caught on the flight vehicle?", "a": "On flatsat, a bug just means editing the procedure and re-running against low-risk EM hardware. On the flight vehicle, the same bug triggers a hold, a Discrepancy Report, and a review cycle before the step can be reattempted &mdash; real schedule and cost impact."}, {"q": "List three things that get validated on flatsat before they are ever used on the flight vehicle.", "a": "Any three of: flight software builds, ground command procedures and scripts, telemetry point mappings, CSTM/ISTM procedures themselves, anomaly response procedures, and new or revised procedures generally."}, {"q": "Why is flatsat testing described as \"real verification,\" not just practice?", "a": "It runs the same flight software and the same ground-system commands and procedures the flight vehicle will use &mdash; the only difference is the hardware underneath is not flight hardware, not that the testing itself is less rigorous."}, {"q": "ATLO Scenario: A new procedure revision has not yet been run on flatsat. Per Lesson 1.4's procedure control rules, can it be used on the flight vehicle if it has already been reviewed and approved on paper?", "a": "No. Paper review and approval are necessary but not sufficient &mdash; flatsat validation is where wrong telemetry references, inaccurate expected values, and missing steps actually get caught. A procedure is not ready for the flight vehicle until it has been successfully executed on flatsat."}];
+const quizMount = document.getElementById('quiz');
+if (quizMount) {
+  QUIZ.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'q';
+    d.innerHTML = '<div class="qn">QUESTION ' + (i + 1) + '</div>' +
+      '<div class="qt">' + q.q + '</div>' +
+      '<button>Reveal what a strong answer covers &#8250;</button>' +
+      '<div class="ans">' + q.a + '</div>';
+    d.querySelector('button').addEventListener('click', () => d.classList.toggle('revealed'));
+    quizMount.appendChild(d);
+  });
+}
+
+const CHAINS = [];
+CHAINS.forEach(chain => {
+  const mount = document.getElementById(chain.mount);
+  if (!mount) return;
+  chain.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'chain-node' + (n.critical ? ' critical' : '');
+    el.setAttribute('tabindex', '0');
+    el.innerHTML = '<div class="cn-title">' + n.title + '</div>' +
+      (n.sub ? '<div class="cn-sub">' + n.sub + '</div>' : '') +
+      '<div class="tip"><h4>' + n.title + '</h4><p>' + n.detail + '</p></div>';
+    mount.appendChild(el);
+  });
+});
+
+const DECISIONS = [];
+DECISIONS.forEach(dec => {
+  const mount = document.getElementById(dec.mount);
+  if (!mount) return;
+  const feedback = document.createElement('div');
+  feedback.className = 'dfeedback';
+  mount.appendChild(feedback);
+  let answered = false;
+  dec.options.forEach((opt, i) => {
+    const letter = String.fromCharCode(65 + i);
+    const btn = document.createElement('button');
+    btn.className = 'dopt';
+    btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      answered = true;
+      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
+      feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
+        '</span>' + opt.feedback;
+    });
+    mount.insertBefore(btn, feedback);
+  });
+});
+
+
+(() => {
+  const SCEN = [{"name": "Wrong telemetry mnemonic referenced in a procedure step", "flatsat": "Caught in minutes. The step fails immediately against engineering-model hardware, you correct the procedure text, and re-run.", "flight": "The same wrong reference now costs a hold, a Discrepancy Report, and lost cleanroom time while the correction is reviewed and re-approved before the step is attempted again on flight hardware.", "onorbit": "A wrong reference in a real command sequence sent to a spacecraft you can never physically touch again is not a paperwork problem &mdash; it can mean losing visibility into, or control of, part of the vehicle."}, {"name": "Missing prerequisite step (e.g., forgot to enable a power rail first)", "flatsat": "Engineering-model hardware may fault or reset. Annoying, but fully recoverable &mdash; power-cycle the EM box and continue.", "flight": "The same missing step against flight hardware can trip a protection circuit, trigger a real anomaly investigation, and delay the schedule by days to weeks while the cause is understood.", "onorbit": "A missing prerequisite in a real on-orbit command sequence can leave the spacecraft in an unintended configuration with no technician able to walk out and physically correct it."}, {"name": "Sign error in a control-loop gain parameter", "flatsat": "The control loop visibly misbehaves on the bench. Engineers see it immediately on real-time displays and fix the parameter before it ever reaches the flight software baseline.", "flight": "If it survives to flight-vehicle functional test, it is now a formal anomaly investigation, a software patch and re-verification cycle, and a schedule impact measured in weeks.", "onorbit": "A control-loop sign error that survives to flight has caused real spacecraft losses in spaceflight history &mdash; this is the textbook reason flatsat software validation exists before flight software is ever loaded onto the vehicle."}];
+  const btn = document.getElementById('flatsat-impact-sim-btn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const s = SCEN[parseInt(document.getElementById('flatsat-impact-sim-pick').value, 10)];
+    const box = document.getElementById('flatsat-impact-sim-result');
+    box.innerHTML =
+      '<div class="dfeedback show correct" style="margin-bottom:8px;">' +
+        '<span class="dtag">FOUND ON FLATSAT</span>' + s.flatsat + '</div>' +
+      '<div class="dfeedback show gold" style="margin-bottom:8px;">' +
+        '<span class="dtag">FOUND ON THE FLIGHT VEHICLE</span>' + s.flight + '</div>' +
+      '<div class="dfeedback show" style="border-left:4px solid #991B1B; background:#FEF2F2;">' +
+        '<span class="dtag" style="color:#991B1B;">FOUND ON-ORBIT</span>' + s.onorbit + '</div>';
+  });
+})();
+</script>
+</body>
+</html>
