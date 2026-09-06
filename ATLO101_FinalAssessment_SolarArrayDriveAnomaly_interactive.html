@@ -325,7 +325,7 @@
       <ul class="exercise-checklist"><li>Does your root cause name the interaction (chatter + debounce threshold), not just "software bug" or "switch failure"?</li><li>Does your disposition address the actual cause -- would simply replacing the switch fix this?</li></ul>
     </div>
     </div>
-<div class="keypoint gold"><div class="kt">ASSESSMENT COMPLETE</div><p>Notice that every individual CSTM/ISTM-style check in this investigation passed: the switch was mechanically fine, the power path was in spec, and the software followed its logic exactly as written. The anomaly only existed at the system level, in how those individually-healthy pieces interacted &mdash; which is exactly why ATLO verification never stops at the component level, and why this investigation needed all four teams to solve.</p></div>
+<div id="assessment-complete-banner" style="display:none;"><div class="keypoint gold"><div class="kt">ASSESSMENT COMPLETE</div><p>Notice that every individual CSTM/ISTM-style check in this investigation passed: the switch was mechanically fine, the power path was in spec, and the software followed its logic exactly as written. The anomaly only existed at the system level, in how those individually-healthy pieces interacted &mdash; which is exactly why ATLO verification never stops at the component level, and why this investigation needed all four teams to solve.</p></div></div>
 </div>
 
 </main>
@@ -462,6 +462,17 @@ document.getElementById('fa-dr-reveal-btn').addEventListener('click', () => {
       if (label) label.textContent = TEAM_NAMES[selectedTeam];
     });
   });
+
+  const drBtn = document.getElementById('fa-dr-reveal-btn');
+  if (drBtn) {
+    drBtn.addEventListener('click', () => {
+      const banner = document.getElementById('assessment-complete-banner');
+      if (banner) {
+        banner.style.display = '';
+        banner.scrollIntoView({block: 'center', behavior: 'smooth'});
+      }
+    });
+  }
 })();
 
 </script>
