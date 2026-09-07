@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Part 2: Execution Overview</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--green);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--green);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badgechip { background:var(--green); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:780px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--green); font-weight:bold; font-size:14px; }
+  h1 { color:var(--navy); font-size:30px; line-height:1.2; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--green); margin-bottom:18px; }
+
+  .hook { background:var(--greenlt); border:1px solid var(--green);
+          border-left:4px solid var(--green); padding:16px 20px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:15.5px; line-height:1.5; margin-bottom:8px; }
+  .subnote { color:var(--gray); font-size:13px; margin:14px 2px 30px; line-height:1.6; }
+
+  /* timeline */
+  .timeline { position:relative; padding-left:52px; margin-bottom:10px; }
+  .timeline::before { content:''; position:absolute; left:19px; top:6px; bottom:6px;
+                       width:3px; background:linear-gradient(var(--gray), var(--green) 8%, var(--green) 92%, var(--gray));
+                       border-radius:2px; }
+
+  .marker { position:relative; display:flex; align-items:center; gap:14px;
+            margin:0 0 22px -32px; }
+  .marker .mbadge { width:20px; height:20px; border-radius:50%; background:var(--graylt);
+                     border:3px solid #fff; box-shadow:0 0 0 2px var(--graylt); flex:none; }
+  .marker .mlabel { color:var(--gray); font-weight:bold; font-size:11.5px;
+                     letter-spacing:.04em; text-transform:uppercase; }
+  .marker.end { margin-top:6px; margin-bottom:0; }
+  .marker.end .mbadge { background:var(--gold); box-shadow:0 0 0 2px var(--goldlt); }
+  .marker.end .mlabel { color:var(--gold); }
+
+  .stop { position:relative; display:flex; gap:18px; margin-bottom:26px; }
+  .stop .badge { position:relative; flex:none; width:40px; height:40px; margin-left:-52px;
+                 border-radius:50%; background:var(--navy); color:#fff;
+                 display:flex; align-items:center; justify-content:center;
+                 font-weight:bold; font-size:12px; border:3px solid #fff;
+                 box-shadow:0 0 0 2px var(--green); z-index:2; }
+  .stop .badge.capstone { background:var(--gold); box-shadow:0 0 0 2px var(--gold);
+                           font-size:17px; }
+  .stop .stopbody { flex:1; background:var(--bgdiag); border:1px solid var(--graylt);
+                     border-radius:10px; padding:14px 18px; }
+  .stop .stoptop { display:flex; align-items:center; justify-content:space-between;
+                    gap:10px; margin-bottom:5px; flex-wrap:wrap; }
+  .stop h3 { color:var(--navy); font-size:15.5px; }
+  .stop p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+  .slochip { background:#fff; border:1px solid var(--graylt); color:var(--navy2);
+             font-weight:bold; font-size:10.5px; letter-spacing:.03em;
+             padding:2px 8px; border-radius:20px; white-space:nowrap; }
+
+  .cta { background:var(--goldlt); border:1px solid var(--gold);
+         border-left:4px solid var(--gold); border-radius:6px;
+         padding:14px 18px; margin-top:8px; }
+  .cta .kt { color:var(--gold); font-weight:bold; font-size:11.5px;
+             letter-spacing:.05em; margin-bottom:4px; }
+  .cta p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+
+  footer { border-top:1.5px solid var(--green); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; margin-top:40px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 2: Execution</div></div>
+  </div>
+  <div class="badgechip">9 STEPS</div>
+</div>
+
+<main>
+  <div class="lesnum">Part 2 &mdash; Chapter Overview</div>
+  <h1>Execution: Now the Bolts Turn, Now the Telemetry Flows</h1>
+  <div class="rule"></div>
+  <div class="hook">Part 1 built the schedule and wrote the procedures. Part 2 is
+    where that plan actually meets the hardware -- one verified connection, one
+    torqued fastener, one passed test at a time.</div>
+  <div class="subnote">Nine steps stand between an approved Part 1 Capstone and a
+    vehicle cleared to ship. Here's the path.</div>
+
+  <div class="timeline">
+<div class="marker start"><div class="mbadge"></div><div class="mlabel">Part 1 Capstone Approved</div></div>
+<div class="stop">
+      <div class="badge">2.1</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>Electrical Fundamentals: Schematics &amp; Circuit Basics</h3><span class="slochip">SLO 6</span></div>
+        <p>Learn to read a schematic, calculate expected resistance with Ohm's Law, and understand why a wiring diagram -- not the schematic -- is what actually tells you where to put your meter leads.</p>
+      </div>
+    </div>
+<div class="stop">
+      <div class="badge">2.2</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>Introduction to Flatsat</h3><span class="slochip">SLO 5</span></div>
+        <p>See why real verification happens on engineering-model hardware first, then put Component and Interface Safe-to-Mate checks into practice yourself on a pyrotechnic initiator and a reaction wheel motor.</p>
+      </div>
+    </div>
+<div class="stop">
+      <div class="badge">2.3</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>Mechanical Integration</h3><span class="slochip">SLO 7</span></div>
+        <p>Learn the torque, witness-mark, and FOD discipline that turns verified components into one physical vehicle, then run CSTM/ISTM checks on flight-vehicle hardware -- an RF coax harness and a solar array harness.</p>
+      </div>
+    </div>
+<div class="stop">
+      <div class="badge">2.4</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>Functional Testing</h3><span class="slochip">SLO 8</span></div>
+        <p>Evaluate real functional test data against defined success criteria, and learn why a result that passes spec can still be worth investigating if it doesn't match its own baseline.</p>
+      </div>
+    </div>
+<div class="stop">
+      <div class="badge">2.5</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>Anomaly Reporting &amp; Disposition</h3><span class="slochip">SLO 9</span></div>
+        <p>Turn "something looked wrong" into a complete Discrepancy Report -- problem description, root cause, and one of four formal dispositions.</p>
+      </div>
+    </div>
+<div class="stop">
+      <div class="badge">2.6</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>Environmental Test Readiness</h3><span class="slochip">SLO 10</span></div>
+        <p>Learn what a Test Readiness Review actually checks before a spacecraft is cleared to face the mechanical and thermal extremes of launch and space.</p>
+      </div>
+    </div>
+<div class="stop">
+      <div class="badge">2.7</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>Introduction to Environmental Testing</h3><span class="slochip">SLO 10</span></div>
+        <p>Meet the environmental test family -- TVAC, vibration, acoustic, and EMI/EMC -- and why they run in a deliberate, standard sequence.</p>
+      </div>
+    </div>
+<div class="stop">
+      <div class="badge">2.8</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>Pre-Shipment Review (PSR)</h3><span class="slochip">SLO 11</span></div>
+        <p>Evaluate PSR readiness the way a real review board does -- not by requiring zero open items, but by requiring nothing ungoverned.</p>
+      </div>
+    </div>
+<div class="stop">
+      <div class="badge capstone">&#9873;</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>Final Assessment: Solar Array Drive Anomaly</h3><span class="slochip">SLO 1&ndash;12</span></div>
+        <p>Investigate a real cross-team anomaly as one of four subsystem teams, determine the actual root cause, and write the Discrepancy Report yourself. Covers SLOs 1&ndash;12 in one integrated scenario.</p>
+      </div>
+    </div>
+<div class="marker end"><div class="mbadge"></div><div class="mlabel">ATLO 101 Complete</div></div>
+  </div>
+
+  <div class="cta">
+    <div class="kt">HOW TO ADVANCE</div>
+    <p>Complete Lessons 2.1&ndash;2.3 (including the CSTM/ISTM exercises), then
+      pass <b>Quiz 6</b> (70% to proceed). Complete Lessons 2.4&ndash;2.6, then
+      pass <b>Quiz 7</b> (70% to proceed). Complete Lessons 2.7&ndash;2.8, then
+      pass <b>Quiz 8</b> (70% to unlock the Final Assessment). Finish the
+      <b>Final Assessment</b> to complete ATLO 101.</p>
+  </div>
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+</body>
+</html>
