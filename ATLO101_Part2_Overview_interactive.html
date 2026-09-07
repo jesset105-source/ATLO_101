@@ -68,6 +68,15 @@
                     gap:10px; margin-bottom:5px; flex-wrap:wrap; }
   .stop h3 { color:var(--navy); font-size:15.5px; }
   .stop p { color:var(--navy2); font-size:13.5px; line-height:1.6; }
+
+  /* CSTM/ISTM exercises -- sub-items of the lesson above them */
+  .stop.exercise-stop { margin-left:22px; margin-bottom:18px; }
+  .stop.exercise-stop .badge { width:30px; height:30px; margin-left:-41px;
+                                background:var(--navy3); box-shadow:0 0 0 2px var(--graylt);
+                                font-size:13px; }
+  .stop.exercise-stop .stopbody { padding:10px 16px; background:#fff; }
+  .stop.exercise-stop h3 { font-size:13.5px; }
+  .stop.exercise-stop p { font-size:12.5px; }
   .slochip { background:#fff; border:1px solid var(--graylt); color:var(--navy2);
              font-weight:bold; font-size:10.5px; letter-spacing:.03em;
              padding:2px 8px; border-radius:20px; white-space:nowrap; }
@@ -90,7 +99,7 @@
     <div><div class="t1">Inside Spacecraft Engineering</div>
          <div class="t2">ATLO 101 &nbsp;-&nbsp; Part 2: Execution</div></div>
   </div>
-  <div class="badgechip">9 STEPS</div>
+  <div class="badgechip">13 STEPS</div>
 </div>
 
 <main>
@@ -100,7 +109,7 @@
   <div class="hook">Part 1 built the schedule and wrote the procedures. Part 2 is
     where that plan actually meets the hardware -- one verified connection, one
     torqued fastener, one passed test at a time.</div>
-  <div class="subnote">Nine steps stand between an approved Part 1 Capstone and a
+  <div class="subnote">Thirteen steps stand between an approved Part 1 Capstone and a
     vehicle cleared to ship. Here's the path.</div>
 
   <div class="timeline">
@@ -116,14 +125,42 @@
       <div class="badge">2.2</div>
       <div class="stopbody">
         <div class="stoptop"><h3>Introduction to Flatsat</h3><span class="slochip">SLO 5</span></div>
-        <p>See why real verification happens on engineering-model hardware first, then put Component and Interface Safe-to-Mate checks into practice yourself on a pyrotechnic initiator and a reaction wheel motor.</p>
+        <p>See why real verification happens on engineering-model hardware first, before it ever touches the flight vehicle.</p>
+      </div>
+    </div>
+<div class="stop exercise-stop">
+      <div class="badge exercise">&#9881;</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>CSTM Exercise: Component Safe-to-Mate (Flatsat)</h3><span class="slochip">SLO 6</span></div>
+        <p>Verify a pyrotechnic deployment initiator is safe to mate -- calculate its expected bridgewire resistance and catch a defect before it's ever connected.</p>
+      </div>
+    </div>
+<div class="stop exercise-stop">
+      <div class="badge exercise">&#9881;</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>ISTM Exercise: Interface Safe-to-Mate (Flatsat)</h3><span class="slochip">SLO 6</span></div>
+        <p>Verify a 3-phase reaction wheel motor's harness using the phase-balance technique -- a check a single reading alone can't catch.</p>
       </div>
     </div>
 <div class="stop">
       <div class="badge">2.3</div>
       <div class="stopbody">
         <div class="stoptop"><h3>Mechanical Integration</h3><span class="slochip">SLO 7</span></div>
-        <p>Learn the torque, witness-mark, and FOD discipline that turns verified components into one physical vehicle, then run CSTM/ISTM checks on flight-vehicle hardware -- an RF coax harness and a solar array harness.</p>
+        <p>Learn the torque, witness-mark, and FOD discipline that turns verified components into one physical vehicle.</p>
+      </div>
+    </div>
+<div class="stop exercise-stop">
+      <div class="badge exercise">&#9881;</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>CSTM Exercise: Component Safe-to-Mate (Flight Vehicle)</h3><span class="slochip">SLO 6</span></div>
+        <p>Verify an RF coax cable assembly with three checks: center conductor continuity, shield continuity, and center-to-shield isolation.</p>
+      </div>
+    </div>
+<div class="stop exercise-stop">
+      <div class="badge exercise">&#9881;</div>
+      <div class="stopbody">
+        <div class="stoptop"><h3>ISTM Exercise: Interface Safe-to-Mate (Flight Vehicle)</h3><span class="slochip">SLO 6</span></div>
+        <p>Verify a solar array harness before it's ever mated, and see why one specific pin pair carries the highest consequence of any check in the course.</p>
       </div>
     </div>
 <div class="stop">
