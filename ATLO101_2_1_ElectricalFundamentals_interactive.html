@@ -355,20 +355,22 @@ DECISIONS.forEach(dec => {
   const feedback = document.createElement('div');
   feedback.className = 'dfeedback';
   mount.appendChild(feedback);
-  let answered = false;
+  let solved = false;
   dec.options.forEach((opt, i) => {
     const letter = String.fromCharCode(65 + i);
     const btn = document.createElement('button');
     btn.className = 'dopt';
     btn.innerHTML = '<span class="letter">' + letter + '</span>' + opt.text;
     btn.addEventListener('click', () => {
-      if (answered) return;
-      answered = true;
-      mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
-      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong');
+      if (solved || btn.classList.contains('chosen')) return;
+      btn.classList.add('chosen', opt.correct ? 'correct' : 'wrong', 'disabled');
       feedback.className = 'dfeedback show ' + (opt.correct ? 'correct' : 'wrong');
       feedback.innerHTML = '<span class="dtag">' + (opt.correct ? 'BEST PRACTICE' : 'CONSIDER AGAIN') +
         '</span>' + opt.feedback;
+      if (opt.correct) {
+        solved = true;
+        mount.querySelectorAll('.dopt').forEach(b => b.classList.add('disabled'));
+      }
     });
     mount.insertBefore(btn, feedback);
   });
