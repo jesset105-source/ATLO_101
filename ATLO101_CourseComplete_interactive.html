@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ATLO 101 — Course Complete</title>
+<style>
+  :root {
+    --navy:#0B1829; --navy2:#1A3152; --navy3:#2D4B6E;
+    --green:#00A87E; --greenlt:#ECFDF5;
+    --gold:#D97706; --goldlt:#FEF3C7;
+    --gray:#64748B; --graylt:#E2E8F0;
+    --bglight:#F8FAFC; --bgdiag:#EEF2F7; --black:#111827;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Helvetica, Arial, sans-serif; background:#fff; color:var(--black); }
+
+  .band { background:var(--navy); border-bottom:3px solid var(--gold);
+          display:flex; align-items:center; justify-content:space-between;
+          padding:10px 22px; position:sticky; top:0; z-index:50; }
+  .band .brand { display:flex; align-items:center; gap:12px; }
+  .band .logo { width:34px; height:34px; border-radius:50%; background:var(--gold);
+                color:var(--navy); font-weight:bold; font-size:11px;
+                display:flex; align-items:center; justify-content:center; }
+  .band .t1 { color:#fff; font-weight:bold; font-size:14px; }
+  .band .t2 { color:#8BA4BC; font-size:11px; }
+  .band .badgechip { background:var(--gold); color:var(--navy); font-weight:bold;
+                 font-size:12px; padding:7px 16px; border-radius:6px; white-space:nowrap; }
+
+  main { max-width:780px; margin:0 auto; padding:34px 20px 60px; }
+  .lesnum { color:var(--gold); font-weight:bold; font-size:14px; }
+  h1 { color:var(--navy); font-size:32px; line-height:1.2; margin:6px 0 12px; }
+  .rule { height:3px; background:var(--gold); margin-bottom:18px; }
+
+  .hook { background:var(--goldlt); border:1px solid var(--gold);
+          border-left:4px solid var(--gold); padding:18px 22px;
+          font-style:italic; font-weight:bold; color:var(--navy2);
+          font-size:16px; line-height:1.55; margin-bottom:30px; }
+
+  h2.sec { color:var(--navy); font-size:19px; margin:34px 0 6px; }
+  .secline { height:1px; background:var(--graylt); margin-bottom:16px; }
+  p.body { font-size:14.5px; line-height:1.65; margin-bottom:13px; color:var(--black); }
+
+  /* stat recap grid */
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:8px; }
+  @media (max-width:640px) { .stats { grid-template-columns:repeat(2,1fr); } }
+  .stat { background:var(--bgdiag); border:1px solid var(--graylt); border-radius:10px;
+          padding:16px 10px; text-align:center; }
+  .stat .n { color:var(--navy); font-weight:bold; font-size:26px; line-height:1; }
+  .stat .l { color:var(--gray); font-size:11px; font-weight:bold; letter-spacing:.03em;
+             text-transform:uppercase; margin-top:6px; line-height:1.4; }
+
+  /* accomplishment list */
+  ul.accomplish { margin:0 0 15px 0; list-style:none; }
+  ul.accomplish li { position:relative; padding-left:28px; font-size:14px;
+                      line-height:1.6; color:var(--navy2); margin-bottom:10px; }
+  ul.accomplish li::before { content:'\2713'; position:absolute; left:0; top:0;
+                      color:var(--green); font-weight:bold; }
+
+  /* grading / certificate card */
+  .cert { background:var(--bgdiag); border:1px solid var(--graylt); border-radius:10px;
+          padding:20px 22px; margin-bottom:10px; }
+  .gradetier { display:flex; justify-content:space-between; align-items:center;
+               padding:10px 0; border-bottom:1px solid var(--graylt); gap:12px; }
+  .gradetier:last-child { border-bottom:none; }
+  .gradetier .range { font-weight:bold; color:var(--navy); font-size:14px; white-space:nowrap; }
+  .gradetier .desc { color:var(--navy2); font-size:13px; text-align:right; }
+  .gradetier.top .range { color:var(--gold); }
+  .cert .note { color:var(--gray); font-size:12.5px; margin-top:14px; line-height:1.6; }
+
+  /* career roles */
+  .roles { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:10px; }
+  @media (max-width:600px) { .roles { grid-template-columns:1fr; } }
+  .role { background:#fff; border:1px solid var(--graylt); border-left:4px solid var(--green);
+          border-radius:8px; padding:13px 16px; }
+  .role .rt { font-weight:bold; color:var(--navy); font-size:13.5px; margin-bottom:3px; }
+  .role .rd { color:var(--gray); font-size:12px; line-height:1.5; }
+
+  /* resources */
+  .resource { display:flex; gap:14px; align-items:flex-start; background:var(--bgdiag);
+              border:1px solid var(--graylt); border-radius:8px; padding:14px 16px;
+              margin-bottom:10px; }
+  .resource .ricon { flex:none; width:34px; height:34px; border-radius:50%;
+                      background:var(--navy); color:#fff; display:flex;
+                      align-items:center; justify-content:center; font-size:15px; }
+  .resource .rbody .rt { font-weight:bold; color:var(--navy); font-size:14px; margin-bottom:3px; }
+  .resource .rbody .rd { color:var(--navy2); font-size:12.5px; line-height:1.55; }
+  .resource a { color:var(--navy2); text-decoration:underline; }
+
+  .signoff { margin-top:36px; padding-top:20px; border-top:1px solid var(--graylt);
+             color:var(--navy2); font-size:14px; line-height:1.7; font-style:italic; }
+  .signoff .name { font-style:normal; font-weight:bold; color:var(--navy); }
+
+  footer { border-top:1.5px solid var(--gold); background:var(--bglight);
+           color:var(--gray); text-align:center; font-size:11px; padding:14px; margin-top:40px; }
+</style>
+</head>
+<body>
+<div class="band">
+  <div class="brand">
+    <div class="logo">ISE</div>
+    <div><div class="t1">Inside Spacecraft Engineering</div>
+         <div class="t2">ATLO 101 &nbsp;-&nbsp; Course Complete</div></div>
+  </div>
+  <div class="badgechip">COURSE COMPLETE</div>
+</div>
+
+<main>
+  <div class="lesnum">Closing Chapter</div>
+  <h1>You've Completed ATLO 101</h1>
+  <div class="rule"></div>
+  <div class="hook">You started not knowing what ATLO stood for. You're finishing having
+    calculated real resistance values from real schematics, verified hardware safe to mate,
+    integrated a vehicle under cleanroom discipline, evaluated test data against baseline,
+    written real Discrepancy Reports, and investigated a cross-team anomaly to root cause.
+    That's not a certificate skill &mdash; that's the job.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">10</div><div class="l">Foundation Subsystems</div></div>
+    <div class="stat"><div class="n">6</div><div class="l">Planning Lessons &amp; Capstone</div></div>
+    <div class="stat"><div class="n">12</div><div class="l">Execution Lessons &amp; CSTM/ISTM Exercises</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">Integrated Final Assessment</div></div>
+  </div>
+
+  <h2 class="sec">What You Can Now Do</h2>
+  <div class="secline"></div>
+  <ul class="accomplish">
+    <li>Describe an ATLO campaign's structure and locate any spacecraft subsystem's critical test points</li>
+    <li>Build a real campaign schedule &mdash; work breakdown structure, dependencies, critical path</li>
+    <li>Author and validate a test procedure, and define pass/fail criteria before a test ever runs</li>
+    <li>Read a schematic, calculate expected resistance with Ohm's Law, and perform CSTM/ISTM verification</li>
+    <li>Apply cleanroom protocols, torque documentation, and workmanship standards during integration</li>
+    <li>Evaluate functional test data against baseline, not just against a fixed spec</li>
+    <li>Write a complete, correctly-dispositioned Discrepancy Report</li>
+    <li>Evaluate environmental test and Pre-Shipment Review readiness the way a real review board does</li>
+    <li>Recognize when NPR 7120.5, GEVS-7000, NPR 8735.2, and NPR 8715.3 apply during a campaign</li>
+  </ul>
+
+  <h2 class="sec">Your Certificate</h2>
+  <div class="secline"></div>
+  <div class="cert">
+    <div class="gradetier top"><div class="range">90&ndash;100%</div>
+      <div class="desc">Pass with Distinction &mdash; Certificate eligible</div></div>
+    <div class="gradetier"><div class="range">75&ndash;89%</div>
+      <div class="desc">Pass &mdash; Certificate eligible</div></div>
+    <div class="gradetier"><div class="range">Below 75%</div>
+      <div class="desc">Audit completion &mdash; no certificate</div></div>
+    <p class="note">Course access was free. If you reached Pass or Pass with Distinction,
+      the official ATLO 101 certificate is available as a $100 add-on.</p>
+  </div>
+
+  <h2 class="sec">Where This Goes From Here</h2>
+  <div class="secline"></div>
+  <p class="body">This course was built to prepare you for entry-level ATLO engineering
+    roles &mdash; the same positions the content throughout was anchored to:</p>
+  <div class="roles">
+    <div class="role"><div class="rt">ATLO Engineer / Systems Engineer (Level 1&ndash;2)</div>
+      <div class="rd">At satellite manufacturers and prime contractors</div></div>
+    <div class="role"><div class="rt">Integration &amp; Test Engineer</div>
+      <div class="rd">At aerospace and defense companies</div></div>
+    <div class="role"><div class="rt">Test Conductor</div>
+      <div class="rd">For environmental test campaigns</div></div>
+    <div class="role"><div class="rt">Production Engineer</div>
+      <div class="rd">In spacecraft manufacturing environments</div></div>
+  </div>
+
+  <h2 class="sec">Keep Learning</h2>
+  <div class="secline"></div>
+  <div class="resource">
+    <div class="ricon">&#9654;</div>
+    <div class="rbody"><div class="rt">Inside Spacecraft Engineering on YouTube</div>
+      <div class="rd">The supplementary video library referenced throughout this course
+        &mdash; <a href="https://www.youtube.com/@SpacecraftEngineering" target="_blank" rel="noopener">@SpacecraftEngineering</a>.</div></div>
+  </div>
+  <div class="resource">
+    <div class="ricon">&#128196;</div>
+    <div class="rbody"><div class="rt">NPR 7120.5 &mdash; NASA Space Flight Program and Project Management Requirements</div>
+      <div class="rd">Publicly available at nasa.gov. Governs the program reviews referenced
+        throughout Parts 1 and 2.</div></div>
+  </div>
+  <div class="resource">
+    <div class="ricon">&#128196;</div>
+    <div class="rbody"><div class="rt">GEVS-7000 &mdash; General Environmental Verification Standard</div>
+      <div class="rd">Publicly available at standards.nasa.gov. The standard behind Lessons
+        2.6 and 2.7's environmental test sequencing.</div></div>
+  </div>
+
+  <h2 class="sec">Help the Next Student Find This Course</h2>
+  <div class="secline"></div>
+  <p class="body">If this course was useful, the single most helpful thing you can do for it
+    costs nothing: leave a rating and review right here on Thinkific. It's what helps the next
+    person deciding whether ATLO 101 is worth their time actually find it.</p>
+  <div class="roles">
+    <div class="role"><div class="rt">Leave a Review</div>
+      <div class="rd">Rate the course on Thinkific and share what was most useful to you
+        &mdash; specific feedback helps future students more than a star rating alone.</div></div>
+    <div class="role"><div class="rt">Share It</div>
+      <div class="rd">Know someone breaking into ATLO, integration &amp; test, or aerospace
+        manufacturing? Pass along the link &mdash; on LinkedIn, in a Slack channel, wherever
+        they'll actually see it.</div></div>
+  </div>
+
+  <div class="signoff">
+    Thank you for putting in the work this course asked of you. The discipline you practiced
+    here &mdash; calling a hold, documenting what you actually observed, never assuming when
+    you can verify &mdash; is the same discipline that keeps real spacecraft safe through
+    launch. Good luck out there.
+    <div style="margin-top:10px;" class="name">&mdash; Jesse Torres, Inside Spacecraft Engineering</div>
+  </div>
+</main>
+
+<footer>ATLO 101 &nbsp;-&nbsp; Introduction to Spacecraft Assembly, Test, and Launch Operations &nbsp;-&nbsp; Inside Spacecraft Engineering</footer>
+</body>
+</html>
